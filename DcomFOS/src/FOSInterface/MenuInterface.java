@@ -5,12 +5,14 @@
  */
 package FOSInterface;
 
-import Client.ViewMenuBE;
 import java.rmi.*;
 import java.net.*;
+import java.sql.SQLException;
+import java.util.List;
+import Client.Menu;
 
 // this interface is a Remote interface. Placing this interface in a seperated system
-public interface PlaceholderInterface extends Remote { //Must have extends Remote keyword
-    //public int add(int x, int y) throws RemoteException; //must use Exception Handling, throw into Remote Exception
-    //public ViewMenuBE() throws RemoteException;
+public interface MenuInterface extends Remote { //Must have extends Remote keyword
+    public void viewMenu() throws RemoteException, SQLException;
+    List<Menu> getMenu() throws RemoteException;
 }

@@ -21,10 +21,13 @@ public class app {
     public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException, SQLException
     {
         System.out.println("hello world");
-        try {
-            new CalBillsClient();
-        } catch (SQLException ex) {
-            Logger.getLogger(app.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            new CalBillsClient();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(app.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        
+        //HM
+        new MenuFrameClient();
     }
 }

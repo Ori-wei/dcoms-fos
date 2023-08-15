@@ -20,8 +20,8 @@ public class PlaceholderServer extends UnicastRemoteObject implements Placeholde
         super(); //must have this constructor
     }
     //method definition for function add
-    @Override
-    public int add(int x, int y) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public int add(int x, int y) throws RemoteException {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 }
