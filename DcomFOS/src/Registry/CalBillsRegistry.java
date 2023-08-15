@@ -25,6 +25,6 @@ public class CalBillsRegistry {
         Registry reg = LocateRegistry.createRegistry(1044);
         calBillsServer calbillsserver = new calBillsServer();
         CalBillsInterface stub = (CalBillsInterface)UnicastRemoteObject.exportObject(calbillsserver, 0);
-        reg.bind("Checkout", stub);
+        reg.bind("getMenu", stub);
     }
 }

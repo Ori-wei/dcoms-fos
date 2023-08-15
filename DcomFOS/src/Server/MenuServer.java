@@ -6,6 +6,7 @@
 package Server;
 
 import Client.FoodDetailBE;
+import Client.Menu;
 import FOSInterface.MenuInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -14,6 +15,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -45,6 +47,8 @@ public class MenuServer extends UnicastRemoteObject implements MenuInterface{ //
                                   ", Price: " + price +
                                   ", Description: " + description +
                                   ", Category: " + category);
+               //return row data to table
+               System.out.println("");
            }
         resultSet.close();
         stm.close();
@@ -54,5 +58,10 @@ public class MenuServer extends UnicastRemoteObject implements MenuInterface{ //
         //System.out.println("End of MenuServer");
         new FoodDetailBE(selection);
         conn.close(); 
+    }
+
+    @Override
+    public List<Menu> getMenu() throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
