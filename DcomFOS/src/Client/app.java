@@ -28,6 +28,6 @@ public class app {
 //        }
         
         //HM
-        new MenuFrameClient();
+        MenuFrameClient.createAndShowGUI();
     }
 }

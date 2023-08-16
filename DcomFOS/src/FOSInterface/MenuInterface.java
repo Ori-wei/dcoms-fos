@@ -5,6 +5,7 @@
  */
 package FOSInterface;
 
+import Client.CartItem;
 import java.rmi.*;
 import java.net.*;
 import java.sql.SQLException;
@@ -15,4 +16,6 @@ import Client.Menu;
 public interface MenuInterface extends Remote { //Must have extends Remote keyword
     public void viewMenu() throws RemoteException, SQLException;
     List<Menu> getMenu() throws RemoteException;
+    List<Menu> getFoodDetail(int foodID) throws RemoteException, SQLException;
+    List<CartItem> getCartItem(int userID) throws RemoteException, SQLException;
 }

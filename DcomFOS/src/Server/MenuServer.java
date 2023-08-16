@@ -5,6 +5,7 @@
  */
 package Server;
 
+import Client.CartItem;
 import Client.FoodDetailBE;
 import Client.Menu;
 import FOSInterface.MenuInterface;
@@ -62,6 +63,20 @@ public class MenuServer extends UnicastRemoteObject implements MenuInterface{ //
 
     @Override
     public List<Menu> getMenu() throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void getFoodDetail() throws RemoteException, SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Menu> getFoodDetail(int foodID) throws RemoteException, SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<CartItem> getCartItem(int userID) throws RemoteException, SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

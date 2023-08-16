@@ -22,32 +22,11 @@ import java.util.List;
  *
  * @author user
  */
-public class MenuFrameServer extends UnicastRemoteObject implements MenuInterface{
-    public MenuFrameServer() throws RemoteException {
+public class FoodDetailFrameServer extends UnicastRemoteObject implements MenuInterface {
+    
+    public FoodDetailFrameServer() throws RemoteException {
         super();
     }
-    @Override
-    public List<Menu> getMenu() throws RemoteException {
-        List<Menu> menuList = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor");
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM food")) {
-
-            while (rs.next()) {
-                Menu menu = new Menu(rs.getInt("FoodID"), rs.getString("FoodName"), rs.getDouble("Price"));
-                menuList.add(menu);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return menuList;
-    }
-
-    @Override
-    public void viewMenu() throws RemoteException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public List<Menu> getFoodDetail(int foodID) throws RemoteException, SQLException {
         List<Menu> menuList = new ArrayList<>();
@@ -65,9 +44,19 @@ public class MenuFrameServer extends UnicastRemoteObject implements MenuInterfac
         System.out.println(menuList);
         return menuList;
     }
+    @Override
+    public void viewMenu() throws RemoteException, SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Menu> getMenu() throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
     public List<CartItem> getCartItem(int userID) throws RemoteException, SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }

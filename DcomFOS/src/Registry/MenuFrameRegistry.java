@@ -23,8 +23,8 @@ public class MenuFrameRegistry {
 //            reg.rebind("MenuInterface", new MenuFrameServer());
 //            System.out.println("Service is ready.");
             
-            MenuInterface menuService = new MenuFrameServer();
             Registry reg = LocateRegistry.createRegistry(1072);
+            MenuInterface menuService = new MenuFrameServer();
             reg.rebind("MenuInterface", menuService);
             System.out.println("Server is ready.");
         } catch (Exception e) {
