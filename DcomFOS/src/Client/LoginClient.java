@@ -5,6 +5,13 @@
  */
 package Client;
 
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  *
@@ -196,7 +203,18 @@ public class LoginClient extends javax.swing.JFrame {
 
     private void btnSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignupActionPerformed
 
-    RegisterClient RegisterClient = new RegisterClient();
+    RegisterClient RegisterClient = null;
+        try {
+            RegisterClient = new RegisterClient();
+        } catch (NotBoundException ex) {
+            Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RemoteException ex) {
+            Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
     RegisterClient.setVisible(true);
     this.dispose();
     }//GEN-LAST:event_btnSignupActionPerformed
