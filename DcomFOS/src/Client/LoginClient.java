@@ -5,12 +5,17 @@
  */
 package Client;
 
+import FOSInterface.RegisterInterface;
+import java.awt.Color;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -18,12 +23,33 @@ import java.util.logging.Logger;
  * @author User
  */
 public class LoginClient extends javax.swing.JFrame {
-
+private RegisterInterface registerService;
     /**
      * Creates new form ClientLogin
      */
-    public LoginClient() {
+    public static void createAndShowGUI(){
+            java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                LoginClient frame = null;
+                try {
+                    frame = new LoginClient();
+                } catch (NotBoundException ex) {
+                    Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                frame.setVisible(true);
+            }
+        });
+    }
+    public LoginClient() throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
+        Registry reg = LocateRegistry.getRegistry("localhost", 1071);
+        registerService = (RegisterInterface) reg.lookup("RegisterInterface");
     }
 
     /**
@@ -39,7 +65,7 @@ public class LoginClient extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         btnLogin = new javax.swing.JButton();
         txtPassword = new javax.swing.JPasswordField();
-        javax.swing.JTextField txtUsername = new javax.swing.JTextField();
+        txtUsername = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         btnClear = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
@@ -55,6 +81,11 @@ public class LoginClient extends javax.swing.JFrame {
         jLabel3.setText("McGee's Food Ordering System (FOS)");
 
         btnLogin.setText("Login");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         txtPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -65,6 +96,11 @@ public class LoginClient extends javax.swing.JFrame {
         jLabel1.setText("Password");
 
         btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(51, 153, 255));
@@ -122,8 +158,7 @@ public class LoginClient extends javax.swing.JFrame {
                                         .addGap(28, 28, 28)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addComponent(txtPassword)
-                                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(21, 21, 21))
+                                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(10, 10, 10)
                                         .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -133,8 +168,7 @@ public class LoginClient extends javax.swing.JFrame {
                                                 .addComponent(jLabel4))
                                             .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(btnSignup)))
-                                        .addGap(15, 15, 15))))
+                                                .addComponent(btnSignup))))))
                             .addComponent(jLabel3)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(88, 88, 88)
@@ -203,25 +237,40 @@ public class LoginClient extends javax.swing.JFrame {
 
     private void btnSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignupActionPerformed
 
-    RegisterClient RegisterClient = null;
-        try {
-            RegisterClient = new RegisterClient();
-        } catch (NotBoundException ex) {
-            Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (RemoteException ex) {
-            Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    RegisterClient.setVisible(true);
+    RegisterClient.createAndShowGUI();
     this.dispose();
     }//GEN-LAST:event_btnSignupActionPerformed
 
     private void btnGuestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuestActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnGuestActionPerformed
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        boolean loginSuccessful = false;
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        
+        if (username.isEmpty() || password.isEmpty()){
+           txtErrormessage.setText("Your details are not filled completely.");
+           txtErrormessage.setForeground(Color.RED);  
+        } else {
+            try { 
+                loginSuccessful = registerService.loginAccount(username, password);
+                if (loginSuccessful){
+                    JOptionPane.showMessageDialog(this, "Welcome back ," + username + ".", "Login Successful", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    txtErrormessage.setText("Invalid credentials.");
+                    txtErrormessage.setForeground(Color.RED);  
+                }
+            } catch (RemoteException ex) {
+                Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } 
+    }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnClearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -254,7 +303,17 @@ public class LoginClient extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LoginClient().setVisible(true);
+                try {
+                    new LoginClient().setVisible(true);
+                } catch (NotBoundException ex) {
+                    Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -272,5 +331,6 @@ public class LoginClient extends javax.swing.JFrame {
     private java.awt.Label label1;
     private javax.swing.JLabel txtErrormessage;
     private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }

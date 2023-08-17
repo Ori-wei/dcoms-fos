@@ -27,7 +27,7 @@ public class app {
 //            Logger.getLogger(app.class.getName()).log(Level.SEVERE, null, ex);
 //        }
         //MH
-        RegisterClient.createAndShowGUI();
+        LoginClient.createAndShowGUI();
         
         //HM
         //MenuFrameClient.createAndShowGUI();

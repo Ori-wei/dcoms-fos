@@ -17,7 +17,7 @@ import java.rmi.registry.Registry;
 public class RegisterRegistry {
     public static void main(String[] args) throws RemoteException{
          try {
-            Registry reg = LocateRegistry.createRegistry(1072);
+            Registry reg = LocateRegistry.createRegistry(1071);
             RegisterInterface registerService = new RegisterServer();
             reg.rebind("RegisterInterface", registerService);
             System.out.println("Server is ready.");

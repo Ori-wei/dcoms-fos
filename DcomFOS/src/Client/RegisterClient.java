@@ -30,7 +30,7 @@ import java.util.List;
  * @author User
  */
 public class RegisterClient extends javax.swing.JFrame {
-private RegisterInterface registerService;
+    private RegisterInterface registerService;
     /**
      * Creates new form RegisterClient
      */
@@ -55,7 +55,7 @@ private RegisterInterface registerService;
     }
     public RegisterClient() throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
-        Registry reg = LocateRegistry.getRegistry("localhost", 1072);
+        Registry reg = LocateRegistry.getRegistry("localhost", 1071);
         registerService = (RegisterInterface) reg.lookup("RegisterInterface");
         //registerService.registerAccount(); 
         
@@ -280,8 +280,14 @@ private RegisterInterface registerService;
                     this.dispose();
                 } catch (RemoteException ex) {
                     Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NotBoundException ex) {          
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
                 }          
-        } else {
+            } else {
             txtErrormsg.setText("Passwords do not match");
             txtErrormsg.setForeground(Color.RED); 
             txtPassword.setText(""); 
@@ -295,8 +301,7 @@ private RegisterInterface registerService;
 
     private void ButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonBackActionPerformed
         // TODO add your handling code here:
-        LoginClient LoginClient = new LoginClient();
-        LoginClient.setVisible(true);
+        LoginClient.createAndShowGUI();
         this.dispose();
     }//GEN-LAST:event_ButtonBackActionPerformed
 
