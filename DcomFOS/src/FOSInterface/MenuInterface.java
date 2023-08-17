@@ -17,5 +17,8 @@ public interface MenuInterface extends Remote { //Must have extends Remote keywo
     public void viewMenu() throws RemoteException, SQLException;
     List<Menu> getMenu() throws RemoteException;
     List<Menu> getFoodDetail(int foodID) throws RemoteException, SQLException;
+    List<CartItem> getCartItem(int foodID, int userID) throws RemoteException, SQLException;
+    public int updateCartItem(int foodID, int userID, int quantity) throws RemoteException, SQLException;
     List<CartItem> getCartItem(int userID) throws RemoteException, SQLException;
+    public int deleteCartItem(int foodID, int userID) throws RemoteException, SQLException;
 }
