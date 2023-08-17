@@ -30,13 +30,13 @@ public class MenuFrameClient extends javax.swing.JFrame {
      * Creates new form MenuFrameClient
      */
     int foodID;
-    
-    public static void createAndShowGUI(){
+    int userID = 2;
+    public static void createAndShowGUI(int userID){
             java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
                     MenuFrameClient frame;
-                    frame = new MenuFrameClient();
+                    frame = new MenuFrameClient(userID);
                     frame.setVisible(true);
                 } catch (NotBoundException ex) {
                     Logger.getLogger(MenuFrameClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -51,9 +51,10 @@ public class MenuFrameClient extends javax.swing.JFrame {
         });
     }
     
-    public MenuFrameClient() throws NotBoundException, MalformedURLException, RemoteException, SQLException {
+    public MenuFrameClient(int userID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         
         initComponents();
+        this.userID=userID;
         //retrieve food table from server
         Registry reg = LocateRegistry.getRegistry("localhost", 1072);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
@@ -74,9 +75,7 @@ public class MenuFrameClient extends javax.swing.JFrame {
             //Problem in jtable infinity loop
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        
-        
+        }  
     } 
 
     /**
@@ -94,7 +93,8 @@ public class MenuFrameClient extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        btnBack1 = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
+        btnCart = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -123,10 +123,17 @@ public class MenuFrameClient extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setText("Food/Drink Detail");
 
-        btnBack1.setText("< Back");
-        btnBack1.addActionListener(new java.awt.event.ActionListener() {
+        btnBack.setText("< Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBack1ActionPerformed(evt);
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        btnCart.setText("To Cart >");
+        btnCart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCartActionPerformed(evt);
             }
         });
 
@@ -135,31 +142,38 @@ public class MenuFrameClient extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(111, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(101, 101, 101))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCart, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(50, 50, 50))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(223, 223, 223)
-                .addComponent(jLabel3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(223, 223, 223)
+                        .addComponent(jLabel3))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(105, 105, 105)
+                        .addComponent(jLabel2)))
+                .addContainerGap(107, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addGap(37, 37, 37)
-                    .addComponent(btnBack1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(484, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(68, 68, 68)
+                .addGap(38, 38, 38)
+                .addComponent(btnCart, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(428, Short.MAX_VALUE))
+                .addContainerGap(422, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addGap(36, 36, 36)
-                    .addComponent(btnBack1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(542, Short.MAX_VALUE)))
         );
 
@@ -230,20 +244,28 @@ public class MenuFrameClient extends javax.swing.JFrame {
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         // TODO add your handling code here:
         System.out.println("hi next btn");
-        FoodDetailFrameClient.createAndShowGUI(foodID);
+        FoodDetailFrameClient.createAndShowGUI(foodID, userID);
         this.dispose();
     }//GEN-LAST:event_btnNextActionPerformed
 
-    private void btnBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBack1ActionPerformed
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnBack1ActionPerformed
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartActionPerformed
+        // TODO add your handling code here:
+        System.out.println("hi cart btn");
+        CartFrameClient.createAndShowGUI(userID);
+        this.dispose();
+    }//GEN-LAST:event_btnCartActionPerformed
     /**
      * @param args the command line arguments
      */
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBack1;
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnCart;
     private javax.swing.JButton btnNext;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
