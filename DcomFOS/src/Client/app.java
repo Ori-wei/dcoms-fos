@@ -28,6 +28,9 @@ public class app {
 //        }
         
         //HM
-        MenuFrameClient.createAndShowGUI();
+        //MenuFrameClient.createAndShowGUI();
+        
+        //YW
+        CalBillsClient.createAndShowGUI(1);
     }
 }
