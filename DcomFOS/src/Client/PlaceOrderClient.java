@@ -14,7 +14,6 @@ import java.rmi.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import FOSInterface.CalBillsInterface;
 import java.sql.SQLException;
 import java.sql.DriverManager;
 import java.sql.Connection;
@@ -22,89 +21,114 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 import javax.swing.table.DefaultTableModel;
+import FOSInterface.YWInterface;
+import javax.swing.JOptionPane;
 
-public class CalBillsClient extends javax.swing.JFrame {
+public class PlaceOrderClient extends javax.swing.JFrame {
+    
+    int userID;
+    int modeID;
+    int cartID;
+
+    public static void createAndShowGUI(int userID, int modeID, int cartID){
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    PlaceOrderClient frame = new PlaceOrderClient(userID, modeID, cartID);
+                    frame.setVisible(true);
+                } catch (MalformedURLException | NotBoundException | RemoteException | SQLException ex) {
+                    Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
 
     /**
      * Creates new form calculateBills
      */
-    public CalBillsClient() throws MalformedURLException,NotBoundException,RemoteException, SQLException{
+    public PlaceOrderClient(int userID, int modeID, int cartID) throws MalformedURLException,NotBoundException,RemoteException, SQLException{
         initComponents();
         
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new CalBillsClient().setVisible(true);
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(CalBillsClient.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (NotBoundException ex) {
-                    Logger.getLogger(CalBillsClient.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (RemoteException ex) {
-                    Logger.getLogger(CalBillsClient.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(CalBillsClient.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
+        this.userID = userID;
+        this.modeID = modeID;
+        this.cartID = cartID;
         
-        // connect with Cart DB and display to jtable
-        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
-        
-        //if connection successful, this msg will print
-        System.out.println("Connected");
-        
-        //retrieve cart items
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT FOOD.FOODNAME, CARTITEM.QUANTITY, FOOD.PRICE FROM FOOD JOIN CARTITEM ON FOOD.FOODID = CARTITEM.FOODID WHERE CARTITEM.CARTID = 1;");
-        DefaultTableModel tm = (DefaultTableModel) checkoutTable.getModel();
-        
-        //display to jtable
-        while (rs.next()){
-            String foodname = rs.getString("FOODNAME");
-            int quantity = rs.getInt("QUANTITY");
-            double price = rs.getDouble("PRICE");
-            tm.addRow(new Object[]{foodname, quantity, price});
-                
-            
+        TFbeforeTax.setEditable(false);
+        TFserviceTax.setEditable(false);
+        TFsst.setEditable(false);
+        TFafterTax.setEditable(false);
         
         //variable initiation
-        double amountBFTax = 0;
-        double amountsvTax = 0;
-        double amountwithSST = 0;
-        double amountafTax = 0;
+        double amountBFTax;
+        double amountsvTax;
+        double amountwithSST;
+        double amountafTax;
+        
+        YWInterface stub = null;
+        try {
+            stub = (YWInterface)Naming.lookup("rmi://localhost:1045/Checkout");
+            
+        } catch (RemoteException | MalformedURLException | NotBoundException e) {
+            System.out.println("Stub error:");
+            e.printStackTrace();
+        }
         
         
-        CalBillsInterface stub = (CalBillsInterface)Naming.lookup("rmi://localhost:1044/Checkout");
+        // Retrieve data and insert table
+        // create table
+        DefaultTableModel tm = (DefaultTableModel) checkoutTable.getModel();
+        
+        //clear existing row
+        tm.setRowCount(0); 
+        
+        // retrieve data based on cartID
+        List<CartItem> itemList = stub.cartItemRetrieval(cartID);
+
+        //insert data from CartItemList into jtable row by row
+        try {
+            for (CartItem ci : itemList) {
+                tm.addRow(new Object[]{ci.getFoodname(), ci.getQuantity(), ci.getPrice()});     
+            }
+            //Problem in jtable infinity loop
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //test calfoodPrice
         for (int record = 0; record < tm.getRowCount(); record++) {
-            double Quantity = (double) tm.getValueAt(record, 1);
+            int Quantity = (int) tm.getValueAt(record, 1);
             double Price = (double) tm.getValueAt(record, 2);
-            tm.setValueAt(stub.calindifoodPrice(Price, Quantity), record, 3);
+            double indiFoodPrice = stub.calindifoodPrice(Price, Quantity);
+            tm.setValueAt(indiFoodPrice, record, 3);
         }
-        
+
         //test calbeforeTax
         List<Double> pricelist = new ArrayList<>();
-        for (int record = 0; record < tm.getRowCount(); record++) {
-            double foodPrice = (double)tm.getValueAt(record, 3);
-            pricelist.add(foodPrice);
+         for (int record = 0; record < tm.getRowCount(); record++) {
+           double foodPrice = (double)tm.getValueAt(record, 3);
+          pricelist.add(foodPrice);
         }
+        System.out.println(pricelist);
         amountBFTax = stub.calbeforeTax(pricelist);
+        System.out.println("From server calBeforeTax" + amountBFTax);
         TFbeforeTax.setText(String.valueOf(amountBFTax));
-        
+
+        // Multithreading
         //test calserviceTax
         amountsvTax = stub.calserviceTax(amountBFTax);
-        TFserviceTax.setText(String.valueOf(5));
-        
+        String formattedAmountsvTax = String.format("%.2f", amountsvTax);
+        TFserviceTax.setText(formattedAmountsvTax);
+
         //test calSST
         amountwithSST = stub.calSST(amountBFTax);
-        TFsst.setText(String.valueOf(amountwithSST));
-        
+        String formattedAmountwithSST = String.format("%.2f", amountwithSST);
+        TFsst.setText(formattedAmountwithSST);
+
         //test calafterTax
         amountafTax = stub.calafterTax(amountBFTax, amountsvTax, amountwithSST);
-        TFafterTax.setText(String.valueOf(amountafTax));
-        }
+        String formattedAmountafTax = String.format("%.2f", amountafTax);
+        TFafterTax.setText(String.valueOf(formattedAmountafTax));
     }
 
     /**
@@ -129,7 +153,7 @@ public class CalBillsClient extends javax.swing.JFrame {
         TFsst = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         TFafterTax = new javax.swing.JTextField();
-        ButtonPay = new javax.swing.JButton();
+        ButtonOrder = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -157,7 +181,7 @@ public class CalBillsClient extends javax.swing.JFrame {
         jScrollPane1.setViewportView(checkoutTable);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setText("Checkout");
+        jLabel2.setText("Place Order");
 
         jLabel3.setText("Service Tax (10%):");
 
@@ -167,10 +191,15 @@ public class CalBillsClient extends javax.swing.JFrame {
 
         jLabel6.setText("Total After Tax:");
 
-        ButtonPay.setText("Pay Now >");
-        ButtonPay.addActionListener(new java.awt.event.ActionListener() {
+        ButtonOrder.setText("Place Order >");
+        ButtonOrder.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ButtonOrderMouseClicked(evt);
+            }
+        });
+        ButtonOrder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonPayActionPerformed(evt);
+                ButtonOrderActionPerformed(evt);
             }
         });
 
@@ -180,7 +209,7 @@ public class CalBillsClient extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(ButtonPay, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ButtonOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                             .addGap(99, 99, 99)
@@ -193,30 +222,30 @@ public class CalBillsClient extends javax.swing.JFrame {
                             .addComponent(jLabel2))
                         .addGroup(layout.createSequentialGroup()
                             .addGap(70, 70, 70)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1))
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(199, 199, 199)
+                                    .addComponent(jLabel4)
+                                    .addGap(28, 28, 28))
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addContainerGap()
-                                    .addComponent(jLabel5)
-                                    .addGap(31, 31, 31))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGap(38, 38, 38)
-                                        .addComponent(jLabel4)
-                                        .addGap(28, 28, 28))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(139, 139, 139)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(18, 18, 18))))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addComponent(jLabel5)
+                                            .addGap(31, 31, 31))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(TFbeforeTax)
                                 .addComponent(TFserviceTax)
                                 .addComponent(TFsst)
                                 .addComponent(TFafterTax, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addGap(104, 104, 104))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -227,7 +256,7 @@ public class CalBillsClient extends javax.swing.JFrame {
                         .addComponent(TFafterTax, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(ButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -247,8 +276,8 @@ public class CalBillsClient extends javax.swing.JFrame {
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(TFsst, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(49, 49, 49)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
-                .addComponent(ButtonPay, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(ButtonOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -258,15 +287,64 @@ public class CalBillsClient extends javax.swing.JFrame {
 
     private void ButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonBackActionPerformed
         // TODO add your handling code here:
-        System.out.println("hi");
-         
+        //CartFrameClient.createAndShowGUI(userID);
+        this.dispose();
     }//GEN-LAST:event_ButtonBackActionPerformed
 
-    private void ButtonPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonPayActionPerformed
+    private void ButtonOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonOrderActionPerformed
         // TODO add your handling code here:
-//        t.setVisible(true);
-//        this.setVisible(false); 
-    }//GEN-LAST:event_ButtonPayActionPerformed
+ 
+        // fix value
+        String price = TFafterTax.getText();
+        double totalprice = Double.parseDouble(price);
+        String status = "Not Paid";
+        
+        // put into db
+        YWInterface stub = null;
+
+        try {
+            stub = (YWInterface)Naming.lookup("rmi://localhost:1045/Checkout");
+        } catch(Exception e) {
+            System.out.println("Stub error:");
+            e.printStackTrace();
+        }
+            
+        int orderID;
+        try {
+            orderID = stub.placeOrder(userID, cartID, modeID, totalprice, status);
+            
+            if (orderID != 0) {
+                JOptionPane.showMessageDialog(null, "Place Order Successful! \n"
+                        + "Your Order ID is" + orderID + "\n"
+                        + "Our chefs will prepare your food soon ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
+
+                // Close the current frame (if needed)
+                this.dispose();
+
+                // Open the next page
+                MakePaymentClient.createAndShowGUI(userID, modeID, cartID, orderID, totalprice);
+
+            }else{
+        
+            JOptionPane.showMessageDialog(null, "Oh no! Something went wrong. \n"
+                        + "Please proceed to the counter to place your order. \n"
+                        + "Thank you very much ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+        } catch (RemoteException ex) {
+            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        
+
+    }//GEN-LAST:event_ButtonOrderActionPerformed
+
+    private void ButtonOrderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonOrderMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_ButtonOrderMouseClicked
 
     /**
      * @param args the command line arguments
@@ -308,7 +386,7 @@ public class CalBillsClient extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonBack;
-    private javax.swing.JButton ButtonPay;
+    private javax.swing.JButton ButtonOrder;
     private javax.swing.JTextField TFafterTax;
     private javax.swing.JTextField TFbeforeTax;
     private javax.swing.JTextField TFserviceTax;

@@ -26,10 +26,10 @@ public class app {
 //        } catch (SQLException ex) {
 //            Logger.getLogger(app.class.getName()).log(Level.SEVERE, null, ex);
 //        }
+        //MH
+        LoginClient.createAndShowGUI();
         
         //HM
-        //global variable
-        int userID=2;
-        MenuFrameClient.createAndShowGUI(userID);
+        //MenuFrameClient.createAndShowGUI();
     }
 }

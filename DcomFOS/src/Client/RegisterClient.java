@@ -5,26 +5,61 @@
  */
 package Client;
 
+import FOSInterface.RegisterInterface;
+import Server.RegisterServer;
 import java.awt.Color;
+import java.awt.event.*;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import javax.swing.JOptionPane;
 import java.sql.Connection; 
 import java.sql.DriverManager; 
 import java.sql.SQLException; 
 import java.sql.Statement; 
+import java.util.List;
 import java.util.logging.Level; 
 import java.util.logging.Logger; 
 
+import java.util.List;
 /**
  *
  * @author User
  */
 public class RegisterClient extends javax.swing.JFrame {
-
+    private RegisterInterface registerService;
     /**
      * Creates new form RegisterClient
      */
-    public RegisterClient() {
+    public static void createAndShowGUI(){
+            java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                RegisterClient frame;
+                try {
+                    frame = new RegisterClient();
+                    frame.setVisible(true);
+                } catch (NotBoundException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
+    public RegisterClient() throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
+        Registry reg = LocateRegistry.getRegistry("localhost", 1071);
+        registerService = (RegisterInterface) reg.lookup("RegisterInterface");
+        //registerService.registerAccount(); 
+        
+        
     }
 
     /**
@@ -81,6 +116,11 @@ public class RegisterClient extends javax.swing.JFrame {
         });
 
         btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
 
         btnSignup.setText("Sign Up");
         btnSignup.addActionListener(new java.awt.event.ActionListener() {
@@ -225,6 +265,9 @@ public class RegisterClient extends javax.swing.JFrame {
         String icnumber = txtICnumber.getText();
         String password = txtPassword.getText();
         String retypePassword = txtRetypePassword.getText();
+        boolean isDuplicate = false;
+        
+      
         
         if (firstname.isEmpty() || lastname.isEmpty() || username.isEmpty() || icnumber.isEmpty() || password.isEmpty() || retypePassword.isEmpty()) {
             txtErrormsg.setText("Your details are not filled completely.");
@@ -236,20 +279,27 @@ public class RegisterClient extends javax.swing.JFrame {
             txtRetypePassword.setText("");
         } else if (password.equals(retypePassword)) {           
             try {
-                Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor"); //db directory, username, password 
-                System.out.println("Connected"); 
-                Statement stm = conn.createStatement(); 
-                stm.executeUpdate("INSERT INTO USERS (USERNAME, PASSWORD, ACTOR, ICPASSPORTNUMBER, FIRSTNAME, LASTNAME) VALUES ('" + username + "', '" + password + "', 'customer', '" + icnumber + "', '" + firstname + "', '" + lastname + "')");
-                conn.commit();
-                conn.close();
-                JOptionPane.showMessageDialog(this, "Your account has been successfuly created! You may login to your account now.", "Account Created", JOptionPane.PLAIN_MESSAGE);
-                LoginClient LoginClient = new LoginClient();
-                LoginClient.setVisible(true);
-                this.dispose();
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }           
-        } else {
+                    isDuplicate = registerService.registerAccount(username, password, icnumber, firstname, lastname); 
+                    if (!isDuplicate){
+                        JOptionPane.showMessageDialog(this, "Your account has been successfuly created! You may login to your account now.", "Account Created", JOptionPane.PLAIN_MESSAGE);
+                        LoginClient LoginClient = new LoginClient();
+                        LoginClient.setVisible(true);
+                        this.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Your username or IC / Passport Number already exists. Please login or retype your details.", "Detials Used", JOptionPane.PLAIN_MESSAGE);
+                        
+                    }
+                    
+                } catch (RemoteException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NotBoundException ex) {          
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                }          
+            } else {
             txtErrormsg.setText("Passwords do not match");
             txtErrormsg.setForeground(Color.RED); 
             txtPassword.setText(""); 
@@ -263,10 +313,18 @@ public class RegisterClient extends javax.swing.JFrame {
 
     private void ButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonBackActionPerformed
         // TODO add your handling code here:
-        LoginClient LoginClient = new LoginClient();
-        LoginClient.setVisible(true);
+        LoginClient.createAndShowGUI();
         this.dispose();
     }//GEN-LAST:event_ButtonBackActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        txtFirstname.setText("");
+        txtLastname.setText("");
+        txtUsername.setText("");
+        txtICnumber.setText("");
+        txtPassword.setText("");
+        txtRetypePassword.setText("");
+    }//GEN-LAST:event_btnClearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -298,7 +356,17 @@ public class RegisterClient extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RegisterClient().setVisible(true);
+                try {
+                    new RegisterClient().setVisible(true);
+                } catch (NotBoundException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -306,7 +374,7 @@ public class RegisterClient extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonBack;
     private javax.swing.JButton btnClear;
-    private javax.swing.JButton btnSignup;
+    public javax.swing.JButton btnSignup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

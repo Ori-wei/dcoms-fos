@@ -5,21 +5,91 @@
  */
 package Client;
 
+import FOSInterface.YWInterface;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author ASUS
  */
-public class makePayment extends javax.swing.JFrame {
+public class MakePaymentClient extends javax.swing.JFrame {
 
+    int userID;
+    int modeID;
+    int cartID;
+    int orderID;
+    double totalprice;
+
+    public static void createAndShowGUI(int userID, int modeID, int cartID, int orderID, double totalprice){
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                MakePaymentClient frame = null;
+                try {
+                    frame = new MakePaymentClient(userID, modeID, cartID, orderID, totalprice);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                frame.setVisible(true);
+            }
+        });
+    }
+        
     /**
      * Creates new form makePayment
      */
-    public makePayment() {
-        //initComponents();
+    
+    /**
+     * Creates new form makePayment
+     * @throws java.rmi.RemoteException
+     */
+            
+    /**
+     * Creates new form makePayment
+     */
+    
+    /**
+     * Creates new form makePayment
+     * @throws java.rmi.RemoteException
+     */
+            
+    /**
+     * Creates new form makePayment
+     */
+    
+    /**
+     * Creates new form makePayment
+     * @throws java.rmi.RemoteException
+     */
+            
+    /**
+     * Creates new form makePayment
+     */
+    
+    /**
+     * Creates new form makePayment
+     * @throws java.rmi.RemoteException
+     */
+    
+    public MakePaymentClient(int userID, int modeID, int cartID, int orderID, double totalprice) throws RemoteException{
+        initComponents();
+        
+        this.userID = userID;
+        this.modeID = modeID;
+        this.cartID = cartID;
+        this.orderID = orderID;
+        this.totalprice = totalprice;
         
         // Group radio buttons so only one can be selected at a time
         ButtonGroup grp = new ButtonGroup();
@@ -28,8 +98,14 @@ public class makePayment extends javax.swing.JFrame {
 
         // Set default selection
         debitRadio.setSelected(true);
+        
+        // Set amount = TFafterTax
+        TFamount.setText(String.valueOf(totalprice));
+        TFamount.setEditable(false);
 
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -43,18 +119,18 @@ public class makePayment extends javax.swing.JFrame {
         buttonGroup1 = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        ButtonBack = new javax.swing.JButton();
         debitRadio = new javax.swing.JRadioButton();
         creditRadio = new javax.swing.JRadioButton();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        TFcardNo = new javax.swing.JTextField();
+        TFexipirationDate = new javax.swing.JTextField();
+        TFcvv = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        TFamount = new javax.swing.JTextField();
+        ButtonPay = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,7 +140,12 @@ public class makePayment extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Payment Page");
 
-        jButton1.setText("< Back");
+        ButtonBack.setText("< Back");
+        ButtonBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonBackActionPerformed(evt);
+            }
+        });
 
         debitRadio.setText("Debit Card");
 
@@ -78,7 +159,12 @@ public class makePayment extends javax.swing.JFrame {
 
         jLabel4.setText("CVV:");
 
-        jButton2.setText("Pay Now >");
+        ButtonPay.setText("Pay Now >");
+        ButtonPay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonPayActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -86,7 +172,7 @@ public class makePayment extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ButtonPay, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -104,7 +190,7 @@ public class makePayment extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(73, 73, 73)
                                 .addComponent(jLabel1))
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(ButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -124,17 +210,17 @@ public class makePayment extends javax.swing.JFrame {
                                 .addComponent(jLabel5)
                                 .addGap(31, 31, 31)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(TFcardNo)
+                            .addComponent(TFexipirationDate)
+                            .addComponent(TFcvv)
+                            .addComponent(TFamount, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(126, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -146,83 +232,125 @@ public class makePayment extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TFamount, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(TFcardNo, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(TFexipirationDate, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(TFcvv, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(49, 49, 49)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addComponent(ButtonPay, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(makePayment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(makePayment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(makePayment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(makePayment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void ButtonPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonPayActionPerformed
+        // TODO add your handling code here:
+        
+        // validate the textfield
+        if (TFcardNo.getText().trim().isEmpty() || TFcvv.getText().trim().isEmpty() || TFexipirationDate.getText().trim().isEmpty() ) {
+            JOptionPane.showMessageDialog(null, "Please fill in the required field!", "Reminder", JOptionPane.WARNING_MESSAGE);
         }
-        //</editor-fold>
+        
+        // payment method
+        String paymentMethod = null;
+        Enumeration<AbstractButton> buttons = buttonGroup1.getElements();
+        while (buttons.hasMoreElements()) {
+            AbstractButton button = buttons.nextElement();
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new makePayment().setVisible(true);
+            if (button.isSelected()) {
+                paymentMethod = button.getText();
+                System.out.println("Selected: " + button.getText());
+                break;
             }
-        });
-    }
+        }
+        
+        
+        // payment timestamp
+        Timestamp pytimestamp; 
+        pytimestamp = new java.sql.Timestamp(System.currentTimeMillis());
+        
+        // put into db
+        YWInterface stub = null;
+
+        try {
+            stub = (YWInterface)Naming.lookup("rmi://localhost:1045/Payment");
+        } catch(Exception e) {
+            System.out.println("Stub error:");
+            e.printStackTrace();
+        }
+        
+        boolean paymentSucess = false;
+        try {
+            paymentSucess = stub.makePayment(orderID, totalprice, paymentMethod, pytimestamp);
+        } catch (RemoteException ex) {
+            Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        System.out.println("Payment status:" + paymentSucess);
+        
+        if (paymentSucess) {
+            try {
+                boolean updateOrderSuccess = stub.updateOrderPaid(orderID);
+
+                if (updateOrderSuccess) {
+                    JOptionPane.showMessageDialog(null, "Make Payment Successful! \n"
+                        + "Thank you for your payment. \n"
+                        + "Please come again ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
+
+                    // Close the current frame (if needed)
+                    this.dispose();
+
+                    // Open the menu page
+
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Oh no! Something went wrong. \n"
+                            + "Please proceed to the counter to make payment. \n"
+                            + "Thank you very much ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_ButtonPayActionPerformed
+
+    private void ButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonBackActionPerformed
+        // TODO add your handling code here:
+        MenuFrameClient.createAndShowGUI(userID);
+        this.dispose();
+    }//GEN-LAST:event_ButtonBackActionPerformed
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ButtonBack;
+    private javax.swing.JButton ButtonPay;
+    private javax.swing.JTextField TFamount;
+    private javax.swing.JTextField TFcardNo;
+    private javax.swing.JTextField TFcvv;
+    private javax.swing.JTextField TFexipirationDate;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton creditRadio;
     private javax.swing.JRadioButton debitRadio;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
-
-    
-    
 
 }
