@@ -110,7 +110,7 @@ public class ModeClient extends javax.swing.JFrame {
         // TODO add your handling code here:
         UserIDInt = Integer.parseInt(UserID);
         Mode = "pickup";
-        MenuFrameClient.createAndShowGUI(UserIDInt, Mode);
+        MenuFrameClient.createAndShowGUI(UserIDInt);
         this.dispose();
     }//GEN-LAST:event_btnPickUpActionPerformed
 
@@ -118,7 +118,7 @@ public class ModeClient extends javax.swing.JFrame {
         // TODO add your handling code here:
         UserIDInt = Integer.parseInt(UserID);
         Mode = "delivery";
-        MenuFrameClient.createAndShowGUI(UserIDInt, Mode);
+        MenuFrameClient.createAndShowGUI(UserIDInt);
         this.dispose();
     }//GEN-LAST:event_btnDelivery1ActionPerformed
 

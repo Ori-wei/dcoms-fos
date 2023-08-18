@@ -31,7 +31,7 @@ public class MenuFrameClient extends javax.swing.JFrame {
      */
     int foodID;
     int userID = 2;
-    public static void createAndShowGUI(int userID, String Mode){
+    public static void createAndShowGUI(int userID){
             java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
