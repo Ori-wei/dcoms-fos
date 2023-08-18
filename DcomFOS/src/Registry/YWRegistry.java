@@ -12,19 +12,28 @@ package Registry;
 
 import Client.CalBillsClient;
 import Server.calBillsServer;
-import FOSInterface.CalBillsInterface;
 import java.rmi.*;
 import java.net.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
+import FOSInterface.YWInterface;
+import Server.MakePaymentServer;
 
-public class CalBillsRegistry {
+public class YWRegistry {
     public static void main(String[] args) throws RemoteException, AlreadyBoundException, MalformedURLException, NotBoundException, SQLException{
-        Registry reg = LocateRegistry.createRegistry(1044);
+        Registry reg = LocateRegistry.createRegistry(1045);
+        
+        // Calculate Bill Server
         calBillsServer calbillsserver = new calBillsServer();
-        CalBillsInterface stub = (CalBillsInterface)UnicastRemoteObject.exportObject(calbillsserver, 0);
-        reg.bind("getMenu", stub);
+        reg.rebind("Checkout", calbillsserver);
+        
+        // Make Payment Server
+        MakePaymentServer makepaymentserver = new MakePaymentServer();
+        reg.rebind("Payment", makepaymentserver);
+        
+        System.out.println("Registry is ready!");
+        
     }
 }
