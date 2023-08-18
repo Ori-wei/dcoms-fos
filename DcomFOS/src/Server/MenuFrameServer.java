@@ -67,7 +67,158 @@ public class MenuFrameServer extends UnicastRemoteObject implements MenuInterfac
     }
 
     @Override
-    public List<CartItem> getCartItem(int userID) throws RemoteException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<CartItem> getCartItem(int foodID, int userID) throws RemoteException, SQLException {
+        int cartID = 0;
+        List<CartItem> cartItemList = new ArrayList<>();
+        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor");
+        String checkCartOwnerID = "select * from Cart where UserID = " + userID;
+        Statement stm1 = conn.createStatement();
+        ResultSet rs1 = stm1.executeQuery(checkCartOwnerID);
+        if (rs1.next())
+        {
+            System.out.println(rs1.getInt("CartID"));
+            cartID = rs1.getInt("CartID");
+            System.out.println("CartID gotten is: " + cartID);
+        }
+        String checkIfCartItemExistInCart = "select * from CartItem where FoodID = " + foodID + " and CartID = " + cartID;
+        Statement stm2 = conn.createStatement();
+        ResultSet rs2 = stm2.executeQuery(checkIfCartItemExistInCart);
+        while (rs2.next()) {
+                CartItem cartItem = new CartItem(rs2.getInt("CartItemID"), rs2.getInt("CartID"), rs2.getInt("FoodID"), rs2.getInt("Quantity"));
+                cartItemList.add(cartItem);
+            }
+        return cartItemList;      
     }
+
+    @Override
+    public int updateCartItem(int foodID, int userID, int quantity) throws RemoteException, SQLException {
+        int cartID = 0;
+        int response = 0;
+        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor");
+        String checkCartOwnerID = "select * from Cart where UserID = " + userID;
+        Statement stm1 = conn.createStatement();
+        ResultSet rs1 = stm1.executeQuery(checkCartOwnerID);
+        if (rs1.next())
+        {
+            System.out.println(rs1.getInt("CartID"));
+            cartID = rs1.getInt("CartID");
+            System.out.println("CartID gotten is: " + cartID);
+        }
+        System.out.println("FoodID gotten is: " + foodID);
+        String checkIfCartItemExistInCart = "select * from CartItem where FoodID = " + foodID + " and CartID = " + cartID;
+        Statement stm2 = conn.createStatement();
+        ResultSet rs2 = stm2.executeQuery(checkIfCartItemExistInCart);
+        int nrow =0 ;
+        if(rs2.next())
+        {
+            nrow = rs2.getInt(1);
+        }     
+        if(nrow==0)
+        {
+            System.out.println("cartitem dont exist. insert new");       
+            String updateQty = "INSERT INTO CartItem (CartID, FoodID, Quantity) VALUES ("+ cartID + ", " + foodID +", " + quantity + ")"; 
+            Statement stm4 = conn.createStatement();
+            int rs4 = stm4.executeUpdate(updateQty);
+            System.out.println(rs4);
+            System.out.println("created new cartitem");
+            response = 1;
+        }
+        else if(nrow>0)
+        {
+            String updateCartItem = "UPDATE CartItem SET Quantity = " + quantity + " WHERE CartID = " + cartID + " AND FoodID = " + foodID +"";  
+            Statement stm5 = conn.createStatement();
+            int rs5 = stm5.executeUpdate(updateCartItem);
+            System.out.println(rs5);
+            System.out.println("Updated existing cartitem");
+            response = 1;
+        }      
+        else
+        {
+            System.out.println("Error in Server Update CartItem");
+            response = 0;
+        }
+        System.out.println("Response is: " + response);
+        return response;
+    }
+
+    @Override
+    public List<CartItem> getCartItem(int userID) throws RemoteException, SQLException {
+        int cartID = 0;
+        List<CartItem> cartItemList = new ArrayList<>();
+        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor");
+        String checkCartOwnerID = "select * from Cart where UserID = " + userID;
+        Statement stm1 = conn.createStatement();
+        ResultSet rs1 = stm1.executeQuery(checkCartOwnerID);
+        if (rs1.next())
+        {
+            System.out.println(rs1.getInt("CartID"));
+            cartID = rs1.getInt("CartID");
+            System.out.println("CartID gotten is: " + cartID);
+        }
+        String checkIfCartItemExistInCart = "SELECT CartItem.CartItemID, CartItem.CartID, CartItem.FoodID, CartItem.Quantity, Food.FoodName, Food.Price FROM CartItem JOIN Food ON Food.FoodID = CartItem.FoodID WHERE CartItem.CartID = " + cartID;
+        Statement stm2 = conn.createStatement();
+        ResultSet rs2 = stm2.executeQuery(checkIfCartItemExistInCart);
+        while (rs2.next()) {
+                CartItem cartItem = new CartItem(rs2.getInt("CartItemID"), rs2.getInt("CartID"), rs2.getInt("FoodID"), rs2.getInt("Quantity"), rs2.getString("FoodName"), rs2.getDouble("Price"));
+                cartItemList.add(cartItem);
+            }
+        return cartItemList;   
+    }
+
+    @Override
+    public int deleteCartItem(int foodID, int userID) throws RemoteException, SQLException {
+        int cartID = 0;
+        int response = 0;
+        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor");
+        String checkCartOwnerID = "select * from Cart where UserID = " + userID;
+        Statement stm1 = conn.createStatement();
+        ResultSet rs1 = stm1.executeQuery(checkCartOwnerID);
+        if (rs1.next())
+        {
+            System.out.println(rs1.getInt("CartID"));
+            cartID = rs1.getInt("CartID");
+            System.out.println("CartID gotten is: " + cartID);
+        }
+        System.out.println("FoodID gotten is: " + foodID);
+        String checkIfCartItemExistInCart = "select * from CartItem where FoodID = " + foodID + " and CartID = " + cartID;
+        Statement stm2 = conn.createStatement();
+        ResultSet rs2 = stm2.executeQuery(checkIfCartItemExistInCart);
+        int nrow =0 ;
+        if(rs2.next())
+        {
+            nrow = rs2.getInt(1);
+        }     
+        if(nrow>0)
+        {
+            System.out.println("Cart Item found. Deleting...");
+//            String nextCartItemIdQuery = "select count(*) from CartItem";
+//            Statement stm3 = conn.createStatement();
+//            ResultSet rs3 = stm3.executeQuery(nextCartItemIdQuery);
+//            int nextID = 0; 
+//            if(rs3.next())
+//            {
+//                nextID = rs3.getInt(1)+1;
+//            }
+//            System.out.println("Next CartItemId is: " + nextID);        
+            String deleteCartItem = "DELETE from CartItem where CartID = " + cartID + " and foodID = " + foodID;          
+            Statement stm4 = conn.createStatement();
+            int rs4 = stm4.executeUpdate(deleteCartItem);
+            System.out.println(rs4);
+            System.out.println("deleted cart item");
+            response = 1;
+        }
+        else if(nrow==0)
+        {
+            System.out.println("No records found. Delete fail.");
+            response = 2;
+        }      
+        else
+        {
+            System.out.println("Error in Server Delete CartItem");
+            response = 0;
+        }
+        System.out.println("Response is: " + response);
+        return response;
+    }
+
 }

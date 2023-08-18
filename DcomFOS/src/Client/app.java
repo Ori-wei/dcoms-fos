@@ -26,11 +26,10 @@ public class app {
 //        } catch (SQLException ex) {
 //            Logger.getLogger(app.class.getName()).log(Level.SEVERE, null, ex);
 //        }
+        //MH
+        LoginClient.createAndShowGUI();
         
         //HM
         //MenuFrameClient.createAndShowGUI();
-        
-        //YW
-        CalBillsClient.createAndShowGUI(1,1,1);
     }
 }
