@@ -329,7 +329,7 @@ public class MakePaymentClient extends javax.swing.JFrame {
 
     private void ButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonBackActionPerformed
         // TODO add your handling code here:
-        CalBillsClient.createAndShowGUI(userID, modeID, cartID);
+        MenuFrameClient.createAndShowGUI(userID);
         this.dispose();
     }//GEN-LAST:event_ButtonBackActionPerformed
 
