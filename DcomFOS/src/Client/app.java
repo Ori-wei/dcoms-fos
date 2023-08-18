@@ -31,6 +31,6 @@ public class app {
         //MenuFrameClient.createAndShowGUI();
         
         //YW
-        CalBillsClient.createAndShowGUI(1);
+        CalBillsClient.createAndShowGUI(1,1,1);
     }
 }
