@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
 import FOSInterface.YWInterface;
 import javax.swing.JOptionPane;
 
-public class CalBillsClient extends javax.swing.JFrame {
+public class PlaceOrderClient extends javax.swing.JFrame {
     
     int userID;
     int modeID;
@@ -35,10 +35,10 @@ public class CalBillsClient extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-                    CalBillsClient frame = new CalBillsClient(userID, modeID, cartID);
+                    PlaceOrderClient frame = new PlaceOrderClient(userID, modeID, cartID);
                     frame.setVisible(true);
                 } catch (MalformedURLException | NotBoundException | RemoteException | SQLException ex) {
-                    Logger.getLogger(CalBillsClient.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -47,7 +47,7 @@ public class CalBillsClient extends javax.swing.JFrame {
     /**
      * Creates new form calculateBills
      */
-    public CalBillsClient(int userID, int modeID, int cartID) throws MalformedURLException,NotBoundException,RemoteException, SQLException{
+    public PlaceOrderClient(int userID, int modeID, int cartID) throws MalformedURLException,NotBoundException,RemoteException, SQLException{
         initComponents();
         
         this.userID = userID;
@@ -181,7 +181,7 @@ public class CalBillsClient extends javax.swing.JFrame {
         jScrollPane1.setViewportView(checkoutTable);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setText("Checkout");
+        jLabel2.setText("Place Order");
 
         jLabel3.setText("Service Tax (10%):");
 
@@ -332,9 +332,9 @@ public class CalBillsClient extends javax.swing.JFrame {
             }
             
         } catch (RemoteException ex) {
-            Logger.getLogger(CalBillsClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(CalBillsClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         

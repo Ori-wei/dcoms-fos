@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
 public class testservicetax {
 
     public static void main(String[] args) throws RemoteException {
-        calBillsServer obj = new calBillsServer();
+        PlaceOrderServer obj = new PlaceOrderServer();
         double hi = obj.calserviceTax(33.50);
         System.out.println("test" + hi);
 

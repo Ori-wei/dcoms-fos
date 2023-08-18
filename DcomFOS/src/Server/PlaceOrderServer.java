@@ -25,10 +25,12 @@ import javax.swing.table.DefaultTableModel;
 import FOSInterface.YWInterface;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class calBillsServer extends UnicastRemoteObject implements YWInterface{
+public class PlaceOrderServer extends UnicastRemoteObject implements YWInterface{
     
-    public calBillsServer() throws RemoteException{
+    public PlaceOrderServer() throws RemoteException{
         super();
     }
     
@@ -80,23 +82,50 @@ public class calBillsServer extends UnicastRemoteObject implements YWInterface{
         return totalbfTax;
     }
     
-    // function calserviceTax
+//    // function calserviceTax
+//    
+//    @Override
+//    public double calserviceTax(double totalBFTax) throws RemoteException{
+//        //totalsvTax = 0;
+//        double totalsvTax = 0;
+//        totalsvTax = 10.00 * totalBFTax / 100;
+//        return totalsvTax;
+//    }
+//    
+//    // function calSST
+//    @Override
+//    public double calSST(double totalBFTax) throws RemoteException{
+//        double totalSST = 0;
+//        totalSST = 6.0 * totalBFTax / 100; 
+//        return totalSST;
+//    }
     
-    @Override
-    public double calserviceTax(double totalBFTax) throws RemoteException{
-        //totalsvTax = 0;
-        double totalsvTax = 0;
-        totalsvTax = 10.00 * totalBFTax / 100;
-        return totalsvTax;
+    public double calserviceTax(double totalBFTax) throws RemoteException {
+        //CalculateTaxesMultithreading.svTaxCalculator svThread = new CalculateTaxesMultithreading.svTaxCalculator(totalBFTax);
+        CalculateTaxesMultithreading.svTaxCalculator svThread = new CalculateTaxesMultithreading.svTaxCalculator();
+        svThread.setTotalBFTax(totalBFTax);
+        svThread.start();
+        try {
+            svThread.join(); // Wait for the thread to complete
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return svThread.getTotalsvTax();
     }
     
-    // function calSST
-    @Override
-    public double calSST(double totalBFTax) throws RemoteException{
-        double totalSST = 0;
-        totalSST = 6.0 * totalBFTax / 100; 
-        return totalSST;
+    public double calSST(double totalBFTax) throws RemoteException {
+        //CalculateTaxesMultithreading.SSTCalculator sstThread = new CalculateTaxesMultithreading.SSTCalculator(totalBFTax);
+        CalculateTaxesMultithreading.SSTCalculator sstThread = new CalculateTaxesMultithreading.SSTCalculator();
+        sstThread.setTotalBFTax(totalBFTax);
+        sstThread.start();
+        try {
+            sstThread.join(); // Wait for the thread to complete
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return sstThread.getTotalSST();
     }
+
     
     // function calafterTax
     double totalafTax;

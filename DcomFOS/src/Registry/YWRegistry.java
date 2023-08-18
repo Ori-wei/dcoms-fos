@@ -10,8 +10,8 @@ package Registry;
  * @author ASUS
  */
 
-import Client.CalBillsClient;
-import Server.calBillsServer;
+import Client.PlaceOrderClient;
+import Server.PlaceOrderServer;
 import java.rmi.*;
 import java.net.*;
 import java.rmi.registry.LocateRegistry;
@@ -26,7 +26,7 @@ public class YWRegistry {
         Registry reg = LocateRegistry.createRegistry(1045);
         
         // Calculate Bill Server
-        calBillsServer calbillsserver = new calBillsServer();
+        PlaceOrderServer calbillsserver = new PlaceOrderServer();
         reg.rebind("Checkout", calbillsserver);
         
         // Make Payment Server
