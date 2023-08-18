@@ -134,5 +134,30 @@ public boolean loginAccount(String username, String password) throws RemoteExcep
 
     return loginSuccessful;
 }
+
+@Override
+public String getUserID( String username)throws RemoteException {
+    String UserID = null;
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+
+    try {
+        conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
+        String query = "SELECT USERID FROM USERS WHERE USERNAME = ?";
+        pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, username);
+        rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            String storedUserID = rs.getString("USERID");
+            UserID = storedUserID;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+        return UserID;
 }
+}
+
 //stm.executeUpdate("INSERT INTO USERS (USERNAME, PASSWORD, ACTOR, ICPASSPORTNUMBER, FIRSTNAME, LASTNAME) VALUES ('" + username + "', '" + password + "', 'customer', '" + icnumber + "', '" + firstname + "', '" + lastname + "')");

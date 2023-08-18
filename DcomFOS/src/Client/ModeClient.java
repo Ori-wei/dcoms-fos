@@ -21,17 +21,21 @@ import javax.swing.JOptionPane;
  * @author User
  */
 public class ModeClient extends javax.swing.JFrame {
-
+    String Mode;
+    static String UserID;
+    int UserIDInt; 
     /**
      * Creates new form ModeClient
      */
     
-    public static void createAndShowGUI(){
+    public static void createAndShowGUI(String ID){
+            UserID = ID;
             java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 ModeClient frame = null;
                 frame = new ModeClient();
                 frame.setVisible(true);
+            
             }
         });
     }
@@ -104,10 +108,18 @@ public class ModeClient extends javax.swing.JFrame {
 
     private void btnPickUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPickUpActionPerformed
         // TODO add your handling code here:
+        UserIDInt = Integer.parseInt(UserID);
+        Mode = "pickup";
+        MenuFrameClient.createAndShowGUI(UserIDInt, Mode);
+        this.dispose();
     }//GEN-LAST:event_btnPickUpActionPerformed
 
     private void btnDelivery1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelivery1ActionPerformed
         // TODO add your handling code here:
+        UserIDInt = Integer.parseInt(UserID);
+        Mode = "delivery";
+        MenuFrameClient.createAndShowGUI(UserIDInt, Mode);
+        this.dispose();
     }//GEN-LAST:event_btnDelivery1ActionPerformed
 
     /**

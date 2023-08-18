@@ -253,6 +253,7 @@ private RegisterInterface registerService;
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         boolean loginSuccessful = false;
+        String UserID = null;
         String username = txtUsername.getText();
         String password = txtPassword.getText();
         
@@ -263,8 +264,9 @@ private RegisterInterface registerService;
             try { 
                 loginSuccessful = registerService.loginAccount(username, password);
                 if (loginSuccessful){
+                    UserID = registerService.getUserID(username);
                     JOptionPane.showMessageDialog(this, "Welcome back , " + username + ".", "Login Successful", JOptionPane.PLAIN_MESSAGE);
-                    ModeClient.createAndShowGUI();
+                    ModeClient.createAndShowGUI(UserID);
                     this.dispose();
                 } else {
                     txtErrormessage.setText("Invalid credentials, please try again.");
