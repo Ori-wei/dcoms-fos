@@ -116,6 +116,11 @@ public class RegisterClient extends javax.swing.JFrame {
         });
 
         btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
 
         btnSignup.setText("Sign Up");
         btnSignup.addActionListener(new java.awt.event.ActionListener() {
@@ -260,6 +265,7 @@ public class RegisterClient extends javax.swing.JFrame {
         String icnumber = txtICnumber.getText();
         String password = txtPassword.getText();
         String retypePassword = txtRetypePassword.getText();
+        boolean isDuplicate = false;
         
       
         
@@ -273,11 +279,17 @@ public class RegisterClient extends javax.swing.JFrame {
             txtRetypePassword.setText("");
         } else if (password.equals(retypePassword)) {           
             try {
-                    registerService.registerAccount(username, password, icnumber, firstname, lastname); 
-                    JOptionPane.showMessageDialog(this, "Your account has been successfuly created! You may login to your account now.", "Account Created", JOptionPane.PLAIN_MESSAGE);
-                    LoginClient LoginClient = new LoginClient();
-                    LoginClient.setVisible(true);
-                    this.dispose();
+                    isDuplicate = registerService.registerAccount(username, password, icnumber, firstname, lastname); 
+                    if (!isDuplicate){
+                        JOptionPane.showMessageDialog(this, "Your account has been successfuly created! You may login to your account now.", "Account Created", JOptionPane.PLAIN_MESSAGE);
+                        LoginClient LoginClient = new LoginClient();
+                        LoginClient.setVisible(true);
+                        this.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Your username or IC / Passport Number already exists. Please login or retype your details.", "Detials Used", JOptionPane.PLAIN_MESSAGE);
+                        
+                    }
+                    
                 } catch (RemoteException ex) {
                     Logger.getLogger(RegisterClient.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (NotBoundException ex) {          
@@ -304,6 +316,15 @@ public class RegisterClient extends javax.swing.JFrame {
         LoginClient.createAndShowGUI();
         this.dispose();
     }//GEN-LAST:event_ButtonBackActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        txtFirstname.setText("");
+        txtLastname.setText("");
+        txtUsername.setText("");
+        txtICnumber.setText("");
+        txtPassword.setText("");
+        txtRetypePassword.setText("");
+    }//GEN-LAST:event_btnClearActionPerformed
 
     /**
      * @param args the command line arguments

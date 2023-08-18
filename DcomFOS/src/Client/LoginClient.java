@@ -93,6 +93,12 @@ private RegisterInterface registerService;
             }
         });
 
+        txtUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUsernameActionPerformed(evt);
+            }
+        });
+
         jLabel1.setText("Password");
 
         btnClear.setText("Clear");
@@ -257,10 +263,14 @@ private RegisterInterface registerService;
             try { 
                 loginSuccessful = registerService.loginAccount(username, password);
                 if (loginSuccessful){
-                    JOptionPane.showMessageDialog(this, "Welcome back ," + username + ".", "Login Successful", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Welcome back , " + username + ".", "Login Successful", JOptionPane.PLAIN_MESSAGE);
+                    ModeClient.createAndShowGUI();
+                    this.dispose();
                 } else {
-                    txtErrormessage.setText("Invalid credentials.");
+                    txtErrormessage.setText("Invalid credentials, please try again.");
                     txtErrormessage.setForeground(Color.RED);  
+                    username = "";
+                    password = "";
                 }
             } catch (RemoteException ex) {
                 Logger.getLogger(LoginClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -269,8 +279,13 @@ private RegisterInterface registerService;
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        // TODO add your handling code here:
+        txtUsername.setText("");
+        txtPassword.setText("");
     }//GEN-LAST:event_btnClearActionPerformed
+
+    private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
+        
+    }//GEN-LAST:event_txtUsernameActionPerformed
 
     /**
      * @param args the command line arguments

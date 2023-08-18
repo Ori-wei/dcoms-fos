@@ -32,18 +32,39 @@ public class RegisterServer extends UnicastRemoteObject implements RegisterInter
 public boolean registerAccount(String username, String password, String icnumber,String firstname, String lastname) throws RemoteException { 
     Connection conn = null;
     Statement stmt = null;
+    ResultSet resultSet = null;
+    boolean isDuplicate = false;
+
     try {
         conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
-        stmt = conn.createStatement();
-        stmt.executeUpdate("INSERT INTO USERS (USERNAME, PASSWORD, ACTOR, ICPASSPORTNUMBER, FIRSTNAME, LASTNAME) VALUES ('" + username + "', '" + password + "', 'customer', '" + icnumber + "', '" + firstname + "', '" + lastname + "')");
         
-        // You might want to add additional checks or return values based on success or failure
-        return true; // Registration successful
+        // Check if the username or icnumber is already in use
+        String checkQuery = "SELECT * FROM USERS WHERE USERNAME = ? OR ICPASSPORTNUMBER = ?";
+        PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+        checkStmt.setString(1, username);
+        checkStmt.setString(2, icnumber);
+        resultSet = checkStmt.executeQuery();
+        
+        if (resultSet.next()) {
+            // Either the username or icnumber is already in use
+            isDuplicate = true; // Registration failed
+        } else {
+            isDuplicate = false;
+            stmt = conn.createStatement();
+            stmt.executeUpdate("INSERT INTO USERS (USERNAME, PASSWORD, ACTOR, ICPASSPORTNUMBER, FIRSTNAME, LASTNAME) VALUES ('" + username + "', '" + password + "', 'customer', '" + icnumber + "', '" + firstname + "', '" + lastname + "')");
+        }       
     } catch (SQLException e) {
         e.printStackTrace();
-        return false; // Registration failed
+        isDuplicate = false; // Registration failed
     } finally {
         // Close the resources in the finally block
+        if (resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
         if (stmt != null) {
             try {
                 stmt.close();
@@ -59,6 +80,9 @@ public boolean registerAccount(String username, String password, String icnumber
             }
         }
     }
+        return isDuplicate;
+ 
+
 }
 
 @Override
