@@ -16,6 +16,8 @@ public class CartItem implements Serializable{
     private int cartId;
     private int foodId;
     private int quantity;
+    private String foodname;
+    private double price;
 
     public CartItem(int cartItemId, int cartId, int foodId, int quantity) {
         this.cartItemId = cartItemId;
@@ -23,7 +25,29 @@ public class CartItem implements Serializable{
         this.foodId = foodId;
         this.quantity = quantity;
     }
+    
+    public CartItem(String foodname, int quantity, double price) {
+        this.foodname = foodname;
+        this.quantity = quantity;
+        this.price = price;
+    }
 
+    public CartItem(int cartId, String foodname, int quantity, double price) {
+        this.cartId = cartId;
+        this.foodname = foodname;
+        this.quantity = quantity;
+        this.price = price;
+    }
+    
+    public CartItem(int cartItemId, int cartId, int foodId, int quantity, String foodName, double price) {
+       this.cartItemId = cartItemId;
+       this.cartId = cartId;
+       this.foodId = foodId;
+       this.quantity = quantity;
+       this.foodname = foodName;
+       this.price = price;
+    }
+    
     public int getCartItemId() {
         return cartItemId;
     }
@@ -56,6 +80,20 @@ public class CartItem implements Serializable{
         this.quantity = quantity;
     }
     
-    
+    public String getFoodname() {
+        return foodname;
+    }
+
+    public void setFoodname(String foodname) {
+        this.foodname = foodname;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
     
 }
