@@ -28,6 +28,8 @@ public class app {
 //        }
         
         //HM
-        MenuFrameClient.createAndShowGUI();
+        //global variable
+        int userID=2;
+        MenuFrameClient.createAndShowGUI(userID);
     }
 }
