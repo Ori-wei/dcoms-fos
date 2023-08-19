@@ -6,7 +6,6 @@
 package Client;
 
 import FOSInterface.MenuInterface;
-import Server.FoodDetailFrameServer;
 import java.net.MalformedURLException;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -54,40 +53,57 @@ public class FoodDetailFrameClient extends javax.swing.JFrame {
         //retrieve food table from server
         Registry reg = LocateRegistry.getRegistry("localhost", 1072);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
-        List<Menu> foodDetailList = menuService.getFoodDetail(foodID);
-        if (!foodDetailList.isEmpty()) { // Check if the list is not empty
-            Menu menu = foodDetailList.get(0); // Get the first element
-            
-            tfFoodName.setText(menu.getFoodName());
-            tfPrice.setText(String.valueOf(menu.getPrice()));
-            tfDescription.setText(menu.getDescription());
-            lbCategory.setText(menu.getCategory() + " Detail");
-            lbFoodId.setText(String.valueOf(foodID));           
-        }
-        
-        List<CartItem> cartItemQtyList = menuService.getCartItem(foodID, userID);
-        if (!cartItemQtyList.isEmpty()) { // Check if the list is not empty
-            CartItem cartItem = cartItemQtyList.get(0); // Get the first element
-            int qty = cartItem.getQuantity();
-            System.out.println("Quantity in cart: " + qty);
-            if(qty==0)
-            {
-                lbQuantity.setText("1");   
-                lbQuantity.revalidate();
-                lbQuantity.repaint();
+        // Thread for task 1
+            new Thread(() -> {
+                try {
+                    List<Menu> foodDetailList = menuService.getFoodDetail(foodID);
+                    if (!foodDetailList.isEmpty()) { // Check if the list is not empty
+                        Menu menu = foodDetailList.get(0); // Get the first element
+
+                        tfFoodName.setText(menu.getFoodName());
+                        tfPrice.setText(String.valueOf(menu.getPrice()));
+                        tfDescription.setText(menu.getDescription());
+                        lbCategory.setText(menu.getCategory() + " Detail");
+                        lbFoodId.setText(String.valueOf(foodID));           
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (SQLException ex) {
+                Logger.getLogger(FoodDetailFrameClient.class.getName()).log(Level.SEVERE, null, ex);
             }
-            else
-            {
-                lbQuantity.setText(String.valueOf(qty));  
-                lbQuantity.revalidate();
-                lbQuantity.repaint();
+            }).start();
+
+            // Thread for task 2
+            new Thread(() -> {
+                try {
+                    List<CartItem> cartItemQtyList = menuService.getCartItem(foodID, userID);
+                    if (!cartItemQtyList.isEmpty()) { // Check if the list is not empty
+                        CartItem cartItem = cartItemQtyList.get(0); // Get the first element
+                        int qty = cartItem.getQuantity();
+                        System.out.println("Quantity in cart: " + qty);
+                        if(qty==0)
+                        {
+                            lbQuantity.setText("1");   
+                            lbQuantity.revalidate();
+                            lbQuantity.repaint();
+                        }
+                        else
+                        {
+                            lbQuantity.setText(String.valueOf(qty));  
+                            lbQuantity.revalidate();
+                            lbQuantity.repaint();
+                        }
+                    }
+                    else //empty record. no cart item found
+                    {
+                        lbQuantity.setText("1");
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (SQLException ex) {
+                Logger.getLogger(FoodDetailFrameClient.class.getName()).log(Level.SEVERE, null, ex);
             }
-               
-        }
-        else //empty record. no cart item found
-        {
-            lbQuantity.setText("1");
-        }
+            }).start();
     }
 
     /**

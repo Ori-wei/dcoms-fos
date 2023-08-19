@@ -26,6 +26,7 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
     int orderID;
     int foodID;
     int quantity;
+    double totalPrice;
     /**
      * Creates new form OrderDetailFrameClient
      */
@@ -55,34 +56,49 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
         btnPay.setVisible(false);
         Registry reg = LocateRegistry.getRegistry("localhost", 1072);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
-        List<CartItem> cartItemList = menuService.getOrderCartItem(userID, orderID);
+        List<OrderItem> orderItemList = menuService.getOrderItem(userID, orderID);
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setColumnIdentifiers(new Object[]{"FoodID", "FoodName","Quantity", "Price", "Total"});
         model.setRowCount(0);
         try {
-            for (CartItem cartItem : cartItemList) {
+            for (OrderItem orderItem : orderItemList) {
                 double total =0;
-                total=cartItem.getQuantity()*cartItem.getPrice();
-                model.addRow(new Object[]{cartItem.getFoodId(), cartItem.getFoodname(), cartItem.getQuantity(), cartItem.getPrice(), total});     
+                total=orderItem.getQuantity()*orderItem.getPrice();
+                model.addRow(new Object[]{orderItem.getFoodId(), orderItem.getFoodname(), orderItem.getQuantity(), orderItem.getPrice(), total});     
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        List<Orders> orderItemList = menuService.getOrderItem(orderID);
+        List<Orders> orderDetailsList = menuService.getOrderDetails(orderID);
         double netTotal =0;
         String status = null;
+        int orderModeID = 0;
         try {
-            for (Orders orderItem : orderItemList) 
+            for (Orders orderDetails : orderDetailsList) 
             {
-                netTotal = orderItem.getTotal();
-                status = orderItem.getStatus();
+                netTotal = orderDetails.getTotal();
+                status = orderDetails.getStatus();
+                orderModeID=orderDetails.getModeID();
             }
             //lbTotal=
         } catch (Exception e) {
             e.printStackTrace();
         }
-        tfTotal.setText(String.valueOf(netTotal));  
+        totalPrice=netTotal;
+        tfTotal.setText(String.valueOf(totalPrice));  
         lbStatus.setText(String.valueOf(status));
+        if(orderModeID==1)
+        {
+            lbMode.setText("Dine-in");
+        }
+        else if(orderModeID==2)
+        {
+            lbMode.setText("Takeaway");
+        }
+        else
+        {
+            lbMode.setText("Mode");
+        }
         if(status.matches("unpaid"))
         {
             btnPay.setVisible(true);
@@ -108,9 +124,9 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
         tfTotal = new javax.swing.JTextField();
         btnPay = new javax.swing.JButton();
         lbStatus = new javax.swing.JLabel();
+        lbMode = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(626, 626));
 
         btnBack.setText("< Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -144,7 +160,7 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        lbTotal.setText("Total (Including 6% GST and 10% SST): ");
+        lbTotal.setText("Total (Including 6% GST and 10% Service Tax): ");
 
         tfTotal.setText("jTextField1");
 
@@ -158,6 +174,10 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
         lbStatus.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         lbStatus.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbStatus.setText("Status");
+
+        lbMode.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lbMode.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbMode.setText("Mode");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -175,9 +195,6 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                             .addGap(35, 35, 35)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGap(39, 39, 39)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
@@ -189,7 +206,12 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
                                             .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(jLabel2)))
-                                    .addGap(36, 36, 36))))))
+                                    .addGap(36, 36, 36))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(39, 39, 39)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(lbMode, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                 .addContainerGap(54, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -202,9 +224,11 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbOrderDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lbOrderDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbMode, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
@@ -258,6 +282,7 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
 
     private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
         System.out.println("Go to YW makePayment page");
+        MakePaymentClient.createAndShowGUI(userID, orderID, totalPrice);
         
     }//GEN-LAST:event_btnPayActionPerformed
 
@@ -268,6 +293,7 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lbMode;
     private javax.swing.JLabel lbOrderDetail;
     private javax.swing.JLabel lbStatus;
     private javax.swing.JLabel lbTotal;

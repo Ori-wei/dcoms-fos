@@ -15,10 +15,12 @@ public class Orders implements Serializable {
     int orderID;
     double total;
     String status;
+    int modeID;
 
-    public Orders(double total, String status) {
+    public Orders(double total, String status, int modeID) {
         this.total=total;
         this.status=status;
+        this.modeID=modeID;
     }
 
     public int getOrderID() {
@@ -43,6 +45,14 @@ public class Orders implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getModeID() {
+        return modeID;
+    }
+
+    public void setModeID(int modeID) {
+        this.modeID = modeID;
     }
     
     

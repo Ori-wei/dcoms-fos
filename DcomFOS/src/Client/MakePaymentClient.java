@@ -45,6 +45,21 @@ public class MakePaymentClient extends javax.swing.JFrame {
             }
         });
     }
+    public static void createAndShowGUI(int userID, int orderID, double totalprice){
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                MakePaymentClient frame = null;
+                try {
+                    frame = new MakePaymentClient(userID, orderID, totalprice);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                frame.setVisible(true);
+            }
+        });
+    }
+    
         
     /**
      * Creates new form makePayment
@@ -104,7 +119,26 @@ public class MakePaymentClient extends javax.swing.JFrame {
         TFamount.setEditable(false);
 
     }
-    
+    public MakePaymentClient(int userID, int orderID, double totalprice) throws RemoteException{
+        initComponents();
+        
+        this.userID = userID;
+        this.orderID = orderID;
+        this.totalprice = totalprice;
+        
+        // Group radio buttons so only one can be selected at a time
+        ButtonGroup grp = new ButtonGroup();
+        grp.add(debitRadio);
+        grp.add(creditRadio);
+
+        // Set default selection
+        debitRadio.setSelected(true);
+        
+        // Set amount = TFafterTax
+        TFamount.setText(String.valueOf(totalprice));
+        TFamount.setEditable(false);
+
+    }
     
 
     /**
