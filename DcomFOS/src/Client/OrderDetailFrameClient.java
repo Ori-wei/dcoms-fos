@@ -255,7 +255,7 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        MenuFrameClient.createAndShowGUI(userID);
+        //MenuFrameClient.createAndShowGUI(userID);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
