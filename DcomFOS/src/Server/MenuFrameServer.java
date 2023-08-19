@@ -7,6 +7,7 @@ package Server;
 
 import Client.CartItem;
 import Client.Menu;
+import Client.OrderItem;
 import Client.Orders;
 import FOSInterface.MenuInterface;
 import java.rmi.RemoteException;
@@ -223,34 +224,34 @@ public class MenuFrameServer extends UnicastRemoteObject implements MenuInterfac
     }
 
     @Override
-    public List<CartItem> getOrderCartItem(int userID, int orderID) throws RemoteException, SQLException {
+    public List<OrderItem> getOrderItem(int userID, int orderID) throws RemoteException, SQLException {
         int cartID = 0;
-        List<CartItem> cartItemList = new ArrayList<>();
+        List<OrderItem> orderItemList = new ArrayList<>();
         Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor");
-        String checkCartOwnerID = "select * from Cart where UserID = " + userID;
-        Statement stm1 = conn.createStatement();
-        ResultSet rs1 = stm1.executeQuery(checkCartOwnerID);
-        if (rs1.next())
-        {
-            System.out.println(rs1.getInt("CartID"));
-            cartID = rs1.getInt("CartID");
-            System.out.println("CartID gotten is: " + cartID);
-        }
-        String checkIfCartItemExistInCart = "SELECT CartItem.CartItemID, CartItem.CartID, CartItem.FoodID, CartItem.Quantity, Food.FoodName, Food.Price FROM CartItem JOIN Food ON Food.FoodID = CartItem.FoodID WHERE CartItem.CartID = " + cartID;
+//        String checkCartOwnerID = "select * from Cart where UserID = " + userID;
+//        Statement stm1 = conn.createStatement();
+//        ResultSet rs1 = stm1.executeQuery(checkCartOwnerID);
+//        if (rs1.next())
+//        {
+//            System.out.println(rs1.getInt("CartID"));
+//            cartID = rs1.getInt("CartID");
+//            System.out.println("CartID gotten is: " + cartID);
+//        }
+        String getOrderItem = "SELECT OrderItem.OrderItemID, OrderItem.OrderID, OrderItem.FoodID, OrderItem.Quantity, OrderItem.Price, Food.FoodName FROM OrderItem JOIN Food ON Food.FoodID = OrderItem.FoodID WHERE OrderItem.OrderID = " + orderID;
         Statement stm2 = conn.createStatement();
-        ResultSet rs2 = stm2.executeQuery(checkIfCartItemExistInCart);
+        ResultSet rs2 = stm2.executeQuery(getOrderItem);
         while (rs2.next()) {
-                CartItem cartItem = new CartItem(rs2.getInt("CartItemID"), rs2.getInt("CartID"), rs2.getInt("FoodID"), rs2.getInt("Quantity"), rs2.getString("FoodName"), rs2.getDouble("Price"));
-                cartItemList.add(cartItem);
+                OrderItem orderItem = new OrderItem(rs2.getInt("OrderItemID"), rs2.getInt("OrderID"), rs2.getInt("FoodID"), rs2.getInt("Quantity"), rs2.getString("FoodName"), rs2.getDouble("Price"));
+                orderItemList.add(orderItem);
             }
-        return cartItemList;   
+        return orderItemList;   
     }
 
     @Override
-    public List<Orders> getOrderItem(int orderID) throws RemoteException, SQLException {
+    public List<Orders> getOrderDetails(int orderID) throws RemoteException, SQLException {
         List<Orders> orderItemList = new ArrayList<>();
         Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor");
-        String getOrderTotal= "select totalprice as total, status from Orders where OrderID = " + orderID;
+        String getOrderTotal= "select totalprice as total, status, modeID from Orders where OrderID = " + orderID;
         Statement stm1 = conn.createStatement();
         ResultSet rs1 = stm1.executeQuery(getOrderTotal);
         double total=0;
@@ -259,7 +260,7 @@ public class MenuFrameServer extends UnicastRemoteObject implements MenuInterfac
             System.out.println(rs1.getDouble("total"));
             total = rs1.getDouble("total");
             System.out.println("Total of OrderID gotten is: " + total);
-            Orders orderItem = new Orders(rs1.getDouble("total"), rs1.getString("status"));
+            Orders orderItem = new Orders(rs1.getDouble("total"), rs1.getString("status"), rs1.getInt("modeID"));
             orderItemList.add(orderItem);
         }
         return orderItemList;
