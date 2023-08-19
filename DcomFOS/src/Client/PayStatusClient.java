@@ -73,22 +73,13 @@ public class PayStatusClient extends javax.swing.JFrame {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-        if (column == 1) { // Check if it's the "Total" column
+        if (column == 1) { 
             Double total = (Double) value;
-            String formattedTotal = String.format("%.2f", total); // Format the numeric value as a String
+            String formattedTotal = String.format("%.2f", total);
             label.setForeground(Color.BLUE);
             label.setForeground(table.getForeground());
-            label.setText(formattedTotal); // Set the formatted total as the label's text
+            label.setText(formattedTotal);
         }
-
-//        String status = (String) table.getValueAt(row, 2); // Get the status from the "Status" column
-//        if ("unpaid".equals(status)) {
-//            label.setForeground(Color.BLUE);
-//            label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//        } else {
-//            label.setForeground(table.getForeground());
-//            label.setCursor(Cursor.getDefaultCursor());
-//        }
 
         return label;
         }
@@ -104,11 +95,8 @@ public class PayStatusClient extends javax.swing.JFrame {
         public void mouseClicked(MouseEvent e) {
             int row = jTable3.rowAtPoint(e.getPoint());
             String status = (String) jTable3.getValueAt(row, 2);
-
-                if ("unpaid".equals(status)) {
-                    int orderID =  Integer.parseInt(jTable3.getValueAt(row, 0).toString());
-                    System.out.println("Clicked on unpaid status for Order ID: " + orderID);
-                }
+            int orderID =  Integer.parseInt(jTable3.getValueAt(row, 0).toString());
+            System.out.println("Clicked on unpaid status for Order ID: " + orderID);
             
         }
     });
@@ -189,7 +177,7 @@ public class PayStatusClient extends javax.swing.JFrame {
 
         lbMode.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         lbMode.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbMode.setText("Click on \"Unpaid\" Detials to continue to payment ");
+        lbMode.setText("Click on Order to View Order Detials ");
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -213,15 +201,13 @@ public class PayStatusClient extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(74, 74, 74)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnBack1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(lbMode, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(btnBack1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel3))))
                 .addContainerGap(55, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(lbMode, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(89, 89, 89))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,9 +218,9 @@ public class PayStatusClient extends javax.swing.JFrame {
                         .addGap(25, 25, 25)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnBack1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lbMode, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbMode, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(451, Short.MAX_VALUE))
         );
