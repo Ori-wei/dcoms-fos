@@ -33,6 +33,8 @@ public interface YWInterface extends Remote{
     
     public int placeOrder(int userid, int cartid, int modeid, double totalprice, String status) throws RemoteException, SQLException;
     
+    public void moveCartItemToOrderItem(int cartID, int foodID, int quantity, int orderID, double Price) throws RemoteException, SQLException;
+    
     // YW - Make Payment
     public boolean makePayment(int orderid, double amount, String paymentMethod, Timestamp paymentDT) throws RemoteException, SQLException;
     
