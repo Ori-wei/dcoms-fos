@@ -107,7 +107,7 @@ public class MakePaymentServer extends UnicastRemoteObject implements YWInterfac
     }
 
     @Override
-    public void moveCartItemToOrderItem(int cartID, int foodID, int quantity, int orderID, double Price) throws RemoteException, SQLException {
+    public void moveCartItemToOrderItem(int cartID, int orderID, double price) throws RemoteException, SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

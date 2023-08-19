@@ -11,6 +11,7 @@ package Server;
  */
 
 import Client.CartItem;
+import Client.OrderItem;
 import java.rmi.*;
 import java.net.*;
 import java.rmi.server.UnicastRemoteObject;
@@ -171,32 +172,38 @@ public class PlaceOrderServer extends UnicastRemoteObject implements YWInterface
             e.printStackTrace();
         }
         
+        moveCartItemToOrderItem(cartid, orderID, totalprice);
+        
         return orderID;
     }
     
-    public void moveCartItemToOrderItem(int cartID, int foodID, int quantity, int orderID, double Price) throws RemoteException, SQLException{
+    public void moveCartItemToOrderItem(int cartID, int orderID, double price) throws RemoteException, SQLException{
         Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
-        
         Statement stmt = conn.createStatement();
-        
-        String query = "SELECT FOODID, QUANTITY FROM CARTITEM WHERE CARTID = " + cartID;
+        List<CartItem> cartItemList = new ArrayList<>();
+        String query = "SELECT CartItem.CARTITEMID, CartItem.FOODID, CartItem.QUANTITY, Food.PRICE FROM CARTITEM JOIN Food ON Food.FoodID = CartItem.FoodID WHERE CARTID = " + cartID;
         ResultSet rs = stmt.executeQuery(query);
-        
-        while(rs.next()){
-            rs.getInt(foodID);
-            rs.getInt(quantity);
+        while(rs.next())
+        {
+            CartItem cartItem = new CartItem(rs.getInt("CARTITEMID"), rs.getInt("FOODID"), rs.getInt("QUANTITY"), rs.getDouble("PRICE"));
+            cartItemList.add(cartItem);
         }
         
         // make a list to save foodid, quantity
         // from this list, insert into orderitem
-        
-        String query1 = "INSERT INTO ORDERITEM (OrderID, FoodID, Quantity, Price) VALUES (" 
-                + orderID + "," + foodID + "," + quantity + "," + Price + ")";
-        int rs1 = stmt.executeUpdate(query1);
-        
-        String query2 = "DELETE FROM CARTITEM WHERE CARTID = " + cartID;
-        int rs2 = stmt.executeUpdate(query2);
-        
+        for (CartItem cartItem2 : cartItemList) 
+        {
+            String query1 = "INSERT INTO ORDERITEM (OrderID, FoodID, Quantity, Price) VALUES (" 
+                + orderID + "," + cartItem2.getFoodId() + "," + cartItem2.getQuantity() + "," + cartItem2.getPrice() + ")";
+            int rs1 = stmt.executeUpdate(query1);
+        }
+        //delete the list into 
+        for (CartItem cartItem3 : cartItemList) 
+        {
+            String query2 = "DELETE FROM CARTITEM WHERE CartItemID = " + cartItem3.getCartItemId();
+            int rs2 = stmt.executeUpdate(query2);
+        }
+                
         //saving the transaction, close
         conn.commit();
         conn.close();

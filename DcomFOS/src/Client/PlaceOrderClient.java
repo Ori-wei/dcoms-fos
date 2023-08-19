@@ -364,7 +364,13 @@ public class PlaceOrderClient extends javax.swing.JFrame {
             Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        stub.moveCartItemToOrderItem(cartID, foodID, quantity, orderID, totalprice);
+        try {
+            stub.moveCartItemToOrderItem(cartID, orderID, totalprice);
+        } catch (RemoteException ex) {
+            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         
 

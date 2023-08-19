@@ -47,6 +47,13 @@ public class CartItem implements Serializable{
        this.foodname = foodName;
        this.price = price;
     }
+
+    public CartItem(int cartItemId, int foodId, int quantity, double price) {
+        this.cartItemId = cartItemId;
+        this.foodId = foodId;
+        this.quantity = quantity;
+        this.price = price;
+    }
     
     public int getCartItemId() {
         return cartItemId;
