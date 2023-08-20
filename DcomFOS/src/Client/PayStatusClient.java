@@ -35,14 +35,15 @@ public class PayStatusClient extends javax.swing.JFrame {
     int orderID = 1 ;
     int foodID;
     int quantity;
+    int modeID;
     double totalPrice;
     
-    public static void createAndShowGUI(int userID) {
+    public static void createAndShowGUI(int userID, int modeID) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {                             
                 PayStatusClient frame = null;
                 try {
-                    frame = new PayStatusClient(userID);
+                    frame = new PayStatusClient(userID, modeID);
                 } catch (NotBoundException ex) {
                     Logger.getLogger(PayStatusClient.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (MalformedURLException ex) {
@@ -97,16 +98,18 @@ public class PayStatusClient extends javax.swing.JFrame {
             String status = (String) jTable3.getValueAt(row, 2);
             int orderID =  Integer.parseInt(jTable3.getValueAt(row, 0).toString());
             System.out.println("Clicked on unpaid status for Order ID: " + orderID);
-            
+            OrderDetailFrameClient.createAndShowGUI(userID, orderID, modeID);
+            dispose();
         }
     });
 }
 
 
     
-    public PayStatusClient(int userID)  throws NotBoundException, MalformedURLException, RemoteException, SQLException {
+    public PayStatusClient(int userID, int modeID)  throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
         this.userID = userID;
+        this.modeID=modeID;
         Registry reg = LocateRegistry.getRegistry("localhost", 1072);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
         List<Orders> orderList = menuService.getOrder(userID);
@@ -240,7 +243,7 @@ public class PayStatusClient extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        //MenuFrameClient.createAndShowGUI(userID);
+        MenuFrameClient.createAndShowGUI(userID, modeID);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
@@ -266,7 +269,7 @@ public class PayStatusClient extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void btnBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBack1ActionPerformed
-        //MenuFrameClient.createAndShowGUI(userID);
+        MenuFrameClient.createAndShowGUI(userID, modeID);
         this.dispose();
     }//GEN-LAST:event_btnBack1ActionPerformed
 

@@ -27,12 +27,14 @@ public class CartFrameClient extends javax.swing.JFrame {
     int userID;
     int foodID;
     int quantity;
-    public static void createAndShowGUI(int userID) {
+    int modeID;
+    int cartID;
+    public static void createAndShowGUI(int userID, int modeID) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {              
                 try {
                     CartFrameClient frame;
-                    frame = new CartFrameClient(userID);
+                    frame = new CartFrameClient(userID, modeID);
                     frame.setVisible(true);
                 } catch (NotBoundException ex) {
                     Logger.getLogger(CartFrameClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -46,9 +48,10 @@ public class CartFrameClient extends javax.swing.JFrame {
             }
         });
     } 
-    public CartFrameClient(int userID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
+    public CartFrameClient(int userID, int modeID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
         this.userID=userID;
+        this.modeID=modeID;
         btnEdit.setVisible(false);
         btnDelete.setVisible(false);
         btnMinus.setVisible(false);
@@ -57,6 +60,7 @@ public class CartFrameClient extends javax.swing.JFrame {
         lbQuantity.setVisible(false);
         Registry reg = LocateRegistry.getRegistry("localhost", 1072);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
+        cartID=menuService.getCartIdOnly(userID);
         List<CartItem> cartItemList = menuService.getCartItem(userID);
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setColumnIdentifiers(new Object[]{"FoodID", "FoodName","Quantity", "Price", "Total"});
@@ -291,7 +295,7 @@ public class CartFrameClient extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        MenuFrameClient.createAndShowGUI(userID);
+        MenuFrameClient.createAndShowGUI(userID, modeID);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
@@ -338,7 +342,7 @@ public class CartFrameClient extends javax.swing.JFrame {
                             ok[0]);
                         if (popUpResponse == JOptionPane.YES_OPTION) 
                         {
-                            CartFrameClient.createAndShowGUI(userID);
+                            CartFrameClient.createAndShowGUI(userID, modeID);
                             this.dispose();
                         }
                     }
@@ -419,7 +423,7 @@ public class CartFrameClient extends javax.swing.JFrame {
                         ok[0]);
                     if (popUpResponse == JOptionPane.YES_OPTION) 
                     {
-                        CartFrameClient.createAndShowGUI(userID);
+                        CartFrameClient.createAndShowGUI(userID, modeID);
                         this.dispose();
                     }
                 }
@@ -451,6 +455,8 @@ public class CartFrameClient extends javax.swing.JFrame {
 
     private void btnCheckoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckoutActionPerformed
         // TODO add your handling code here:
+        PlaceOrderClient.createAndShowGUI(userID, modeID, cartID);
+        this.dispose();
     }//GEN-LAST:event_btnCheckoutActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -478,7 +484,7 @@ public class CartFrameClient extends javax.swing.JFrame {
                     options[0]);
                 if (popUpResponse == JOptionPane.YES_OPTION) 
                 {
-                    CartFrameClient.createAndShowGUI(userID);
+                    CartFrameClient.createAndShowGUI(userID, modeID);
                     this.dispose();
                 }
             }

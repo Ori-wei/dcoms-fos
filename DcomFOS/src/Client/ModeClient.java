@@ -22,13 +22,14 @@ import javax.swing.JOptionPane;
  */
 public class ModeClient extends javax.swing.JFrame {
     String Mode;
-    static String UserID;
+    int modeID;
+    static int UserID;
     int UserIDInt; 
     /**
      * Creates new form ModeClient
      */
     
-    public static void createAndShowGUI(String ID){
+    public static void createAndShowGUI(int ID){
             UserID = ID;
             java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -109,17 +110,19 @@ public class ModeClient extends javax.swing.JFrame {
 
     private void btnTakeawayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTakeawayActionPerformed
         // TODO add your handling code here:
-        UserIDInt = Integer.parseInt(UserID);
+        UserIDInt = UserID;
         Mode = "takeaway";
-        MenuFrameClient.createAndShowGUI(UserIDInt, Mode);
+        modeID=2;
+        MenuFrameClient.createAndShowGUI(UserIDInt, modeID);
         this.dispose();
     }//GEN-LAST:event_btnTakeawayActionPerformed
 
     private void btnDineInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDineInActionPerformed
         // TODO add your handling code here:
-        UserIDInt = Integer.parseInt(UserID);
+        UserIDInt = UserID;
         Mode = "dinein";
-        MenuFrameClient.createAndShowGUI(UserIDInt, Mode);
+        modeID=1;
+        MenuFrameClient.createAndShowGUI(UserIDInt, modeID);
         this.dispose();
     }//GEN-LAST:event_btnDineInActionPerformed
 

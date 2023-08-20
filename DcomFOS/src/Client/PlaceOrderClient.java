@@ -39,6 +39,8 @@ public class PlaceOrderClient extends javax.swing.JFrame {
                     frame.setVisible(true);
                 } catch (MalformedURLException | NotBoundException | RemoteException | SQLException ex) {
                     Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -47,7 +49,7 @@ public class PlaceOrderClient extends javax.swing.JFrame {
     /**
      * Creates new form calculateBills
      */
-    public PlaceOrderClient(int userID, int modeID, int cartID) throws MalformedURLException,NotBoundException,RemoteException, SQLException{
+    public PlaceOrderClient(int userID, int modeID, int cartID) throws MalformedURLException,NotBoundException,RemoteException, SQLException, InterruptedException{
         initComponents();
         
         this.userID = userID;
@@ -74,7 +76,7 @@ public class PlaceOrderClient extends javax.swing.JFrame {
         
         YWInterface stub = null;
         try {
-            stub = (YWInterface)Naming.lookup("rmi://localhost:1045/Checkout");
+            stub = (YWInterface)Naming.lookup("rmi://localhost:1072/Checkout");
             
         } catch (RemoteException | MalformedURLException | NotBoundException e) {
             System.out.println("Stub error:");
@@ -314,7 +316,7 @@ public class PlaceOrderClient extends javax.swing.JFrame {
 
     private void ButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonBackActionPerformed
         // TODO add your handling code here:
-        //CartFrameClient.createAndShowGUI(userID);
+        CartFrameClient.createAndShowGUI(userID, modeID);
         this.dispose();
     }//GEN-LAST:event_ButtonBackActionPerformed
 
@@ -324,13 +326,13 @@ public class PlaceOrderClient extends javax.swing.JFrame {
         // fix value
         String price = TFafterTax.getText();
         double totalprice = Double.parseDouble(price);
-        String status = "Not Paid";
+        String status = "unpaid";
         
         // put into db
         YWInterface stub = null;
 
         try {
-            stub = (YWInterface)Naming.lookup("rmi://localhost:1045/Checkout");
+            stub = (YWInterface)Naming.lookup("rmi://localhost:1072/Checkout");
         } catch(Exception e) {
             System.out.println("Stub error:");
             e.printStackTrace();

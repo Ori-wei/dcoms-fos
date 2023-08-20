@@ -27,8 +27,8 @@ public class app {
 //            Logger.getLogger(app.class.getName()).log(Level.SEVERE, null, ex);
 //        }
         //MH
-        PayStatusClient.createAndShowGUI(2);
-        
+        //PayStatusClient.createAndShowGUI(2, 1);
+        RegisterClient.createAndShowGUI();
         //HM
         //MenuFrameClient.createAndShowGUI();
     }

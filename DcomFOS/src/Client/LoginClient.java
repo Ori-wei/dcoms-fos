@@ -48,7 +48,7 @@ private RegisterInterface registerService;
     }
     public LoginClient() throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
-        Registry reg = LocateRegistry.getRegistry("localhost", 1071);
+        Registry reg = LocateRegistry.getRegistry("localhost", 1072);
         registerService = (RegisterInterface) reg.lookup("RegisterInterface");
     }
 
@@ -253,7 +253,7 @@ private RegisterInterface registerService;
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         boolean loginSuccessful = false;
-        String UserID = null;
+        int UserID;
         String username = txtUsername.getText();
         String password = txtPassword.getText();
         

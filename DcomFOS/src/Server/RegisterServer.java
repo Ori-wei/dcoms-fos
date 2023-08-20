@@ -52,6 +52,24 @@ public boolean registerAccount(String username, String password, String icnumber
             isDuplicate = false;
             stmt = conn.createStatement();
             stmt.executeUpdate("INSERT INTO USERS (USERNAME, PASSWORD, ACTOR, ICPASSPORTNUMBER, FIRSTNAME, LASTNAME) VALUES ('" + username + "', '" + password + "', 'customer', '" + icnumber + "', '" + firstname + "', '" + lastname + "')");
+            
+            //get userid and insert into cart
+            int userID = 0;
+            Statement stmtUserID = conn.createStatement();
+            String queryUserID = "Select UserID from USERS where USERNAME = '" + username + "'";
+            ResultSet rsUserID = stmtUserID.executeQuery(queryUserID);
+            if(rsUserID.next())
+            {
+               userID = rsUserID.getInt("UserID");
+                System.out.println("UserID is: " + userID);
+            }     
+            Statement stmtInsertCart = conn.createStatement();
+            String insertCart = "INSERT INTO CART (USERID, STATUS) VALUES (" + userID + ", 'empty') ";
+            int rsInsertCart = stmtInsertCart.executeUpdate(insertCart);
+            if(rsInsertCart>0)
+            {
+                System.out.println("Cart inserted, with number of rows affected: " + rsInsertCart);
+            }
         }       
     } catch (SQLException e) {
         e.printStackTrace();
@@ -136,8 +154,8 @@ public boolean loginAccount(String username, String password) throws RemoteExcep
 }
 
 @Override
-public String getUserID( String username)throws RemoteException {
-    String UserID = null;
+public int getUserID( String username)throws RemoteException {
+    int UserID = 0;
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
@@ -150,7 +168,7 @@ public String getUserID( String username)throws RemoteException {
         rs = pstmt.executeQuery();
 
         if (rs.next()) {
-            String storedUserID = rs.getString("USERID");
+            int storedUserID = rs.getInt("USERID");
             UserID = storedUserID;
         }
     } catch (SQLException e) {

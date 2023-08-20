@@ -300,5 +300,21 @@ public class MenuFrameServer extends UnicastRemoteObject implements MenuInterfac
     return orderList;
 }
 
+    @Override
+    public int getCartIdOnly(int userID) throws RemoteException, SQLException {
+        int cartID = 0;
+        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor");
+        String checkCartOwnerID = "select * from Cart where UserID = " + userID;
+        Statement stm1 = conn.createStatement();
+        ResultSet rs1 = stm1.executeQuery(checkCartOwnerID);
+        if (rs1.next())
+        {
+            System.out.println(rs1.getInt("CartID"));
+            cartID = rs1.getInt("CartID");
+            System.out.println("CartID gotten is: " + cartID);
+        }
+        return cartID;
+    }
+
 
 }
