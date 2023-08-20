@@ -110,7 +110,7 @@ public class PayStatusClient extends javax.swing.JFrame {
         initComponents();
         this.userID = userID;
         this.modeID=modeID;
-        Registry reg = LocateRegistry.getRegistry("localhost", 1072);
+        Registry reg = LocateRegistry.getRegistry("localhost", 1070);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
         List<Orders> orderList = menuService.getOrder(userID);
 

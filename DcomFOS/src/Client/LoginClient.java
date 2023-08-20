@@ -48,7 +48,7 @@ private RegisterInterface registerService;
     }
     public LoginClient() throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
-        Registry reg = LocateRegistry.getRegistry("localhost", 1072);
+        Registry reg = LocateRegistry.getRegistry("localhost", 1070);
         registerService = (RegisterInterface) reg.lookup("RegisterInterface");
     }
 

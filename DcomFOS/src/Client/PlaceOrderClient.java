@@ -10,6 +10,7 @@ package Client;
  * @author ASUS
  */
 
+import FOSInterface.MenuInterface;
 import java.rmi.*;
 import java.net.*;
 import java.util.logging.Level;
@@ -22,6 +23,8 @@ import java.sql.Statement;
 import java.util.*;
 import javax.swing.table.DefaultTableModel;
 import FOSInterface.YWInterface;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import javax.swing.JOptionPane;
 
 public class PlaceOrderClient extends javax.swing.JFrame {
@@ -74,14 +77,18 @@ public class PlaceOrderClient extends javax.swing.JFrame {
         double amountwithSST;
         double amountafTax;
         
-        YWInterface stub = null;
-        try {
-            stub = (YWInterface)Naming.lookup("rmi://localhost:1072/Checkout");
-            
-        } catch (RemoteException | MalformedURLException | NotBoundException e) {
-            System.out.println("Stub error:");
-            e.printStackTrace();
-        }
+        
+//        YWInterface stub = null;
+//        try {
+//            stub = (YWInterface)Naming.lookup("rmi://localhost:1070/Checkout");
+//            
+//        } catch (RemoteException | MalformedURLException | NotBoundException e) {
+//            System.out.println("Stub error:");
+//            e.printStackTrace();
+//        }
+        
+        Registry reg = LocateRegistry.getRegistry("localhost", 1070);
+        YWInterface stub = (YWInterface) reg.lookup("Checkout");
         
         
         // Retrieve data and insert table
@@ -322,24 +329,27 @@ public class PlaceOrderClient extends javax.swing.JFrame {
 
     private void ButtonOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonOrderActionPerformed
         // TODO add your handling code here:
- 
-        // fix value
-        String price = TFafterTax.getText();
-        double totalprice = Double.parseDouble(price);
-        String status = "unpaid";
-        
-        // put into db
-        YWInterface stub = null;
+        try {
+            // fix value
+            String price = TFafterTax.getText();
+            double totalprice = Double.parseDouble(price);
+            String status = "unpaid";
 
-        try {
-            stub = (YWInterface)Naming.lookup("rmi://localhost:1072/Checkout");
-        } catch(Exception e) {
-            System.out.println("Stub error:");
-            e.printStackTrace();
-        }
-            
-        int orderID = 0;
-        try {
+            // put into db
+            //YWInterface stub = null;
+
+    //        try {
+    //            stub = (YWInterface)Naming.lookup("rmi://localhost:1070/Checkout");
+    //        } catch(Exception e) {
+    //            System.out.println("Stub error:");
+    //            e.printStackTrace();
+    //        }
+
+            Registry reg = LocateRegistry.getRegistry("localhost", 1070);
+            YWInterface stub = (YWInterface) reg.lookup("Checkout");
+
+            int orderID = 0;
+        
             orderID = stub.placeOrder(userID, cartID, modeID, totalprice, status);
             
             if (orderID != 0) {
@@ -359,18 +369,14 @@ public class PlaceOrderClient extends javax.swing.JFrame {
                         + "Please proceed to the counter to place your order. \n"
                         + "Thank you very much ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
             }
+
+            stub.moveCartItemToOrderItem(cartID, orderID, totalprice);
             
         } catch (RemoteException ex) {
             Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        try {
-            stub.moveCartItemToOrderItem(cartID, orderID, totalprice);
-        } catch (RemoteException ex) {
-            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
+        } catch (NotBoundException ex){
             Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 

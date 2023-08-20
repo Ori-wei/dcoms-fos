@@ -57,7 +57,7 @@ public class FoodDetailFrameClient extends javax.swing.JFrame {
         System.out.println("modeid is: " + modeID);
         lbFoodId.setVisible(false);
         //retrieve food table from server
-        Registry reg = LocateRegistry.getRegistry("localhost", 1072);
+        Registry reg = LocateRegistry.getRegistry("localhost", 1070);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
         // Thread for task 1
             new Thread(() -> {
@@ -307,7 +307,7 @@ public class FoodDetailFrameClient extends javax.swing.JFrame {
             // TODO add your handling code here:
             System.out.println("Button Update");
             int quantity = Integer.parseInt(lbQuantity.getText());
-            Registry reg = LocateRegistry.getRegistry("localhost", 1072);
+            Registry reg = LocateRegistry.getRegistry("localhost", 1070);
             MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
             int response = menuService.updateCartItem(foodID, userID, quantity);
             if(response==1)

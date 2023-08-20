@@ -11,7 +11,7 @@ package Registry;
  */
 
 import Client.PlaceOrderClient;
-import Server.PlaceOrderServer;
+import Server.OrderPaymentServer;
 import java.rmi.*;
 import java.net.*;
 import java.rmi.registry.LocateRegistry;
@@ -23,10 +23,10 @@ import Server.MakePaymentServer;
 
 public class YWRegistry {
     public static void main(String[] args) throws RemoteException, AlreadyBoundException, MalformedURLException, NotBoundException, SQLException{
-        Registry reg = LocateRegistry.createRegistry(1045);
+        Registry reg = LocateRegistry.createRegistry(1072);
         
         // Calculate Bill Server
-        PlaceOrderServer calbillsserver = new PlaceOrderServer();
+        OrderPaymentServer calbillsserver = new OrderPaymentServer();
         reg.rebind("Checkout", calbillsserver);
         
         // Make Payment Server

@@ -5,7 +5,7 @@
  */
 package Client;
 
-import Server.PlaceOrderServer;
+import Server.OrderPaymentServer;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;

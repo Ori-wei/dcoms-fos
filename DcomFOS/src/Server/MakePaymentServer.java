@@ -27,48 +27,47 @@ public class MakePaymentServer extends UnicastRemoteObject implements YWInterfac
         super();
     }
     
-    public boolean makePayment(int orderid, double amount, String paymentMethod, Timestamp paymentDT) throws RemoteException, SQLException{
-        // function success indicator
-        // fail = 0, success = 1
-        boolean makePaymentSuccess = false;
-        
-        // connect to payment db
-        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
-        System.out.println(conn);
-        Statement stmt = conn.createStatement();
-        String query = "INSERT INTO PAYMENT (OrderID, Amount, PaymentMethod, PaymentDateTime) VALUES (" + orderid + ", " + amount + ", '" + paymentMethod + "', '" + paymentDT + "')";
-        int rs = stmt.executeUpdate(query);
-        
-        //saving the transaction, close
-        conn.commit();
-        conn.close();
-        
-        // successful msg
-        System.out.println("Make payment successful ^^~");
-        
-        // return boolean
-        return makePaymentSuccess = true;
-    }
-    
-    public boolean updateOrderPaid(int orderid) throws RemoteException, SQLException{
-        // function success indicator
-        // fail = 0, success = 1
-        boolean updateOrderStatus = false;
-        
-        // establish connection
-        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
-        
-        // update order db
-        Statement stmt = conn.createStatement();
-        String query = "UPDATE ORDERS SET STATUS = 'PAID' WHERE ORDERID = " + orderid;
-        int rs = stmt.executeUpdate(query);
-        
-        //saving the transaction, close
-        conn.commit();
-        conn.close();
-        
-        return updateOrderStatus = true;
-    }
+//    public boolean makePayment(int orderid, double amount, String paymentMethod, Timestamp paymentDT) throws RemoteException, SQLException{
+//        // function success indicator
+//        // fail = 0, success = 1
+//        boolean makePaymentSuccess = false;
+//        
+//        // connect to payment db
+//        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
+//        System.out.println(conn);
+//        Statement stmt = conn.createStatement();
+//        String query = "INSERT INTO PAYMENT (OrderID, Amount, PaymentMethod, PaymentDateTime) VALUES (" + orderid + ", " + amount + ", '" + paymentMethod + "', '" + paymentDT + "')";
+//        int rs = stmt.executeUpdate(query);
+//        
+//        //saving the transaction, close
+//        conn.commit();
+//        conn.close();
+//        
+//        // successful msg
+//        System.out.println("Make payment successful ^^~");
+//        
+//        // return boolean
+//        return makePaymentSuccess = true;
+//    }
+//    
+//    public boolean updateOrderPaid(int orderid) throws RemoteException, SQLException{
+//        // function success indicator
+//        // fail = 0, success = 1
+//        boolean updateOrderStatus = false;
+//        
+//        // establish connection
+//        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
+//        
+//        // update order db
+//        Statement stmt = conn.createStatement();
+//        String query = "UPDATE ORDERS SET STATUS = 'PAID' WHERE ORDERID = " + orderid;
+//        int rs = stmt.executeUpdate(query);
+//        
+//        //saving the transaction, close
+//        conn.commit();
+//        conn.close();
+//        
+//        return updateOrderStatus = true;
 
     @Override
     public List<CartItem> cartItemRetrieval(int cartid) throws RemoteException, SQLException {
@@ -109,4 +108,14 @@ public class MakePaymentServer extends UnicastRemoteObject implements YWInterfac
     public void moveCartItemToOrderItem(int cartID, int orderID, double price) throws RemoteException, SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-}
+
+    @Override
+    public boolean makePayment(int orderid, double amount, String paymentMethod, Timestamp paymentDT) throws RemoteException, SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean updateOrderPaid(int orderid) throws RemoteException, SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    }
