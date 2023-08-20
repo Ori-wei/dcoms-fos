@@ -16,5 +16,5 @@ import java.util.List;
 public interface RegisterInterface extends Remote {
     boolean registerAccount(String username, String password, String icnumber, String firstname, String lastname) throws RemoteException;
     boolean loginAccount(String username, String password) throws RemoteException;
-    String getUserID(String username) throws RemoteException;
+    int getUserID(String username) throws RemoteException;
 }

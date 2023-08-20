@@ -28,13 +28,14 @@ public class FoodDetailFrameClient extends javax.swing.JFrame {
      * Creates new form FoodDetailFrameClient
      */
     int foodID;
-    int userID = 2;
-    public static void createAndShowGUI(int foodID, int userID){
+    int userID;
+    int modeID;
+    public static void createAndShowGUI(int foodID, int userID, int modeID){
             java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
                     FoodDetailFrameClient frame;
-                    frame = new FoodDetailFrameClient(foodID, userID);
+                    frame = new FoodDetailFrameClient(foodID, userID, modeID);
                     frame.setVisible(true);
                 } catch (RemoteException ex) {
                     Logger.getLogger(FoodDetailFrameClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -46,10 +47,15 @@ public class FoodDetailFrameClient extends javax.swing.JFrame {
             }
         });
     }
-    public FoodDetailFrameClient(int foodID, int userID) throws RemoteException, NotBoundException, SQLException {
+    public FoodDetailFrameClient(int foodID, int userID, int modeID) throws RemoteException, NotBoundException, SQLException {
         initComponents();
+        this.userID=userID;
         this.foodID=foodID;
+        this.modeID=modeID;
         System.out.println("FoodID received from menu: " + foodID);
+        System.out.println("userid is: " + userID);
+        System.out.println("modeid is: " + modeID);
+        lbFoodId.setVisible(false);
         //retrieve food table from server
         Registry reg = LocateRegistry.getRegistry("localhost", 1072);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
@@ -319,7 +325,7 @@ public class FoodDetailFrameClient extends javax.swing.JFrame {
                     options[0]);
                 if (popUpResponse == JOptionPane.YES_OPTION) 
                 {
-                    MenuFrameClient.createAndShowGUI(userID);
+                    MenuFrameClient.createAndShowGUI(userID, modeID);
                     this.dispose();
                 }
             }
@@ -348,7 +354,7 @@ public class FoodDetailFrameClient extends javax.swing.JFrame {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        MenuFrameClient.createAndShowGUI(userID);
+        MenuFrameClient.createAndShowGUI(userID, modeID);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 

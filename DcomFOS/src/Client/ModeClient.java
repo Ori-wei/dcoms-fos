@@ -22,13 +22,14 @@ import javax.swing.JOptionPane;
  */
 public class ModeClient extends javax.swing.JFrame {
     String Mode;
-    static String UserID;
+    int modeID;
+    static int UserID;
     int UserIDInt; 
     /**
      * Creates new form ModeClient
      */
     
-    public static void createAndShowGUI(String ID){
+    public static void createAndShowGUI(int ID){
             UserID = ID;
             java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -53,23 +54,24 @@ public class ModeClient extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnPickUp = new javax.swing.JButton();
-        btnDelivery1 = new javax.swing.JButton();
+        btnTakeaway = new javax.swing.JButton();
+        btnDineIn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        btnPickUp.setText("Pick Up");
-        btnPickUp.addActionListener(new java.awt.event.ActionListener() {
+        btnTakeaway.setText("Pick Up");
+        btnTakeaway.setActionCommand("Takeaway");
+        btnTakeaway.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPickUpActionPerformed(evt);
+                btnTakeawayActionPerformed(evt);
             }
         });
 
-        btnDelivery1.setText("Delivery");
-        btnDelivery1.addActionListener(new java.awt.event.ActionListener() {
+        btnDineIn.setText("Dine In");
+        btnDineIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDelivery1ActionPerformed(evt);
+                btnDineInActionPerformed(evt);
             }
         });
 
@@ -82,9 +84,9 @@ public class ModeClient extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(btnDelivery1, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnDineIn, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnPickUp, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnTakeaway, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -98,29 +100,31 @@ public class ModeClient extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnPickUp, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
-                    .addComponent(btnDelivery1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnTakeaway, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                    .addComponent(btnDineIn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(236, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnPickUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPickUpActionPerformed
+    private void btnTakeawayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTakeawayActionPerformed
         // TODO add your handling code here:
-        UserIDInt = Integer.parseInt(UserID);
-        Mode = "pickup";
-        MenuFrameClient.createAndShowGUI(UserIDInt);
+        UserIDInt = UserID;
+        Mode = "takeaway";
+        modeID=2;
+        MenuFrameClient.createAndShowGUI(UserIDInt, modeID);
         this.dispose();
-    }//GEN-LAST:event_btnPickUpActionPerformed
+    }//GEN-LAST:event_btnTakeawayActionPerformed
 
-    private void btnDelivery1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelivery1ActionPerformed
+    private void btnDineInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDineInActionPerformed
         // TODO add your handling code here:
-        UserIDInt = Integer.parseInt(UserID);
-        Mode = "delivery";
-        MenuFrameClient.createAndShowGUI(UserIDInt);
+        UserIDInt = UserID;
+        Mode = "dinein";
+        modeID=1;
+        MenuFrameClient.createAndShowGUI(UserIDInt, modeID);
         this.dispose();
-    }//GEN-LAST:event_btnDelivery1ActionPerformed
+    }//GEN-LAST:event_btnDineInActionPerformed
 
     /**
      * @param args the command line arguments
@@ -158,8 +162,8 @@ public class ModeClient extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDelivery1;
-    private javax.swing.JButton btnPickUp;
+    private javax.swing.JButton btnDineIn;
+    private javax.swing.JButton btnTakeaway;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

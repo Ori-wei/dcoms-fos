@@ -34,10 +34,9 @@ public class MakePaymentServer extends UnicastRemoteObject implements YWInterfac
         
         // connect to payment db
         Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
-        
+        System.out.println(conn);
         Statement stmt = conn.createStatement();
-        String query = "INSERT INTO PAYMENT (OrderID, Amount, PaymentMethod, PaymentDateTime) VALUES (" 
-                + orderid + "," + amount + "," + paymentMethod + "," + paymentDT + ")";
+        String query = "INSERT INTO PAYMENT (OrderID, Amount, PaymentMethod, PaymentDateTime) VALUES (" + orderid + ", " + amount + ", '" + paymentMethod + "', '" + paymentDT + "')";
         int rs = stmt.executeUpdate(query);
         
         //saving the transaction, close
@@ -87,12 +86,12 @@ public class MakePaymentServer extends UnicastRemoteObject implements YWInterfac
     }
 
     @Override
-    public double calserviceTax(double totalBFTax) throws RemoteException {
+    public double calserviceTax(double totalBFTax) throws RemoteException, InterruptedException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public double calSST(double totalBFTax) throws RemoteException {
+    public double calSST(double totalBFTax) throws RemoteException, InterruptedException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -26,16 +26,17 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
     int orderID;
     int foodID;
     int quantity;
+    int modeID;
     double totalPrice;
     /**
      * Creates new form OrderDetailFrameClient
      */
-    public static void createAndShowGUI(int userID, int orderID) {
+    public static void createAndShowGUI(int userID, int orderID, int modeID) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {                             
                 try {
                     OrderDetailFrameClient frame;
-                    frame = new OrderDetailFrameClient(userID, orderID);
+                    frame = new OrderDetailFrameClient(userID, orderID, modeID);
                     frame.setVisible(true);
                 } catch (NotBoundException ex) {
                     Logger.getLogger(OrderDetailFrameClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -49,10 +50,11 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
             }
         });
     } 
-    public OrderDetailFrameClient(int userID, int orderID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
+    public OrderDetailFrameClient(int userID, int orderID, int modeID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
         this.userID = userID;
         this.orderID = orderID;
+        this.modeID = modeID;
         btnPay.setVisible(false);
         Registry reg = LocateRegistry.getRegistry("localhost", 1072);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
@@ -255,7 +257,8 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        MenuFrameClient.createAndShowGUI(userID);
+        //MenuFrameClient.createAndShowGUI(userID);
+        PayStatusClient.createAndShowGUI(userID, modeID);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 

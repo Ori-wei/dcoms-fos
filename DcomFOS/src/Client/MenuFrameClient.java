@@ -31,12 +31,13 @@ public class MenuFrameClient extends javax.swing.JFrame {
      */
     int foodID;
     int userID = 2;
-    public static void createAndShowGUI(int userID){
+    int modeID;
+    public static void createAndShowGUI(int userID, int modeID){
             java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
                     MenuFrameClient frame;
-                    frame = new MenuFrameClient(userID);
+                    frame = new MenuFrameClient(userID, modeID);
                     frame.setVisible(true);
                 } catch (NotBoundException ex) {
                     Logger.getLogger(MenuFrameClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -51,10 +52,11 @@ public class MenuFrameClient extends javax.swing.JFrame {
         });
     }
     
-    public MenuFrameClient(int userID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
+    public MenuFrameClient(int userID, int modeID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         
         initComponents();
         this.userID=userID;
+        this.modeID=modeID;
         //retrieve food table from server
         Registry reg = LocateRegistry.getRegistry("localhost", 1072);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
@@ -95,6 +97,7 @@ public class MenuFrameClient extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         btnBack = new javax.swing.JButton();
         btnCart = new javax.swing.JButton();
+        btnPayStatus = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -137,12 +140,21 @@ public class MenuFrameClient extends javax.swing.JFrame {
             }
         });
 
+        btnPayStatus.setText("Pay Status");
+        btnPayStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPayStatusActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(258, Short.MAX_VALUE)
+                .addComponent(btnPayStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(120, 120, 120)
                 .addComponent(btnCart, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(50, 50, 50))
             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -164,7 +176,9 @@ public class MenuFrameClient extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addComponent(btnCart, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCart, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPayStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -244,20 +258,28 @@ public class MenuFrameClient extends javax.swing.JFrame {
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         // TODO add your handling code here:
         System.out.println("hi next btn");
-        FoodDetailFrameClient.createAndShowGUI(foodID, userID);
+        FoodDetailFrameClient.createAndShowGUI(foodID, userID, modeID);
         this.dispose();
     }//GEN-LAST:event_btnNextActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
+        ModeClient.createAndShowGUI(userID);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartActionPerformed
         // TODO add your handling code here:
         System.out.println("hi cart btn");
-        CartFrameClient.createAndShowGUI(userID);
+        CartFrameClient.createAndShowGUI(userID, modeID);
         this.dispose();
     }//GEN-LAST:event_btnCartActionPerformed
+
+    private void btnPayStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayStatusActionPerformed
+        // TODO add your handling code here:
+        System.out.println("hi Pay Status btn");
+        PayStatusClient.createAndShowGUI(userID, modeID);
+        this.dispose();
+    }//GEN-LAST:event_btnPayStatusActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -267,6 +289,7 @@ public class MenuFrameClient extends javax.swing.JFrame {
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnCart;
     private javax.swing.JButton btnNext;
+    private javax.swing.JButton btnPayStatus;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;

@@ -16,13 +16,21 @@ public class Orders implements Serializable {
     double total;
     String status;
     int modeID;
+    String modeName;
 
     public Orders(double total, String status, int modeID) {
         this.total=total;
         this.status=status;
         this.modeID=modeID;
     }
-
+    
+    public Orders(int orderID, double total, String status, String modeName) {
+        this.orderID=orderID;
+        this.total=total;
+        this.status=status;
+        this.modeName = modeName;
+    }
+    
     public int getOrderID() {
         return orderID;
     }
@@ -50,9 +58,17 @@ public class Orders implements Serializable {
     public int getModeID() {
         return modeID;
     }
+    
+    public String getModeName() {
+        return modeName;
+    }
 
     public void setModeID(int modeID) {
         this.modeID = modeID;
+    }
+    
+    public void setModeName(String modeName) {
+        this.modeName = modeName;
     }
     
     

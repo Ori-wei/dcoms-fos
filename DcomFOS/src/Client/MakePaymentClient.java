@@ -319,7 +319,7 @@ public class MakePaymentClient extends javax.swing.JFrame {
         YWInterface stub = null;
 
         try {
-            stub = (YWInterface)Naming.lookup("rmi://localhost:1045/Payment");
+            stub = (YWInterface)Naming.lookup("rmi://localhost:1072/Payment");
         } catch(Exception e) {
             System.out.println("Stub error:");
             e.printStackTrace();
@@ -348,8 +348,8 @@ public class MakePaymentClient extends javax.swing.JFrame {
                     // Close the current frame (if needed)
                     this.dispose();
 
-                    // Open the menu page
-
+                    // Open the choose mode page
+                    ModeClient.createAndShowGUI(userID);
                 }
 
             } catch (Exception e) {
@@ -363,7 +363,7 @@ public class MakePaymentClient extends javax.swing.JFrame {
 
     private void ButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonBackActionPerformed
         // TODO add your handling code here:
-        MenuFrameClient.createAndShowGUI(userID);
+        MenuFrameClient.createAndShowGUI(userID, modeID);
         this.dispose();
     }//GEN-LAST:event_ButtonBackActionPerformed
 
