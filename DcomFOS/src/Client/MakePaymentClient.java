@@ -13,6 +13,8 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Enumeration;
@@ -291,73 +293,69 @@ public class MakePaymentClient extends javax.swing.JFrame {
 
     private void ButtonPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonPayActionPerformed
         // TODO add your handling code here:
-        
-        // validate the textfield
-        if (TFcardNo.getText().trim().isEmpty() || TFcvv.getText().trim().isEmpty() || TFexipirationDate.getText().trim().isEmpty() ) {
-            JOptionPane.showMessageDialog(null, "Please fill in the required field!", "Reminder", JOptionPane.WARNING_MESSAGE);
-        }
-        
-        // payment method
-        String paymentMethod = null;
-        Enumeration<AbstractButton> buttons = buttonGroup1.getElements();
-        while (buttons.hasMoreElements()) {
-            AbstractButton button = buttons.nextElement();
-
-            if (button.isSelected()) {
-                paymentMethod = button.getText();
-                System.out.println("Selected: " + button.getText());
-                break;
+        try{
+            // validate the textfield
+            if (TFcardNo.getText().trim().isEmpty() || TFcvv.getText().trim().isEmpty() || TFexipirationDate.getText().trim().isEmpty() ) {
+                JOptionPane.showMessageDialog(null, "Please fill in the required field!", "Reminder", JOptionPane.WARNING_MESSAGE);
             }
-        }
-        
-        
-        // payment timestamp
-        Timestamp pytimestamp; 
-        pytimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-        
-        // put into db
-        YWInterface stub = null;
 
-        try {
-            stub = (YWInterface)Naming.lookup("rmi://localhost:1072/Payment");
-        } catch(Exception e) {
-            System.out.println("Stub error:");
-            e.printStackTrace();
-        }
+            // payment method
+            String paymentMethod = null;
+            Enumeration<AbstractButton> buttons = buttonGroup1.getElements();
+            while (buttons.hasMoreElements()) {
+                AbstractButton button = buttons.nextElement();
+
+                if (button.isSelected()) {
+                    paymentMethod = button.getText();
+                    System.out.println("Selected: " + button.getText());
+                    break;
+                }
+            }
+
+            // payment timestamp
+            Timestamp pytimestamp; 
+            pytimestamp = new java.sql.Timestamp(System.currentTimeMillis());
         
-        boolean paymentSucess = false;
-        try {
-            paymentSucess = stub.makePayment(orderID, totalprice, paymentMethod, pytimestamp);
+//        // put into db
+            Registry reg = LocateRegistry.getRegistry("localhost", 1070);
+            YWInterface stub1 = (YWInterface) reg.lookup("Checkout");
+   
+            boolean paymentSucess = false;
+        
+            paymentSucess = stub1.makePayment(orderID, totalprice, paymentMethod, pytimestamp);
+        
+        
+            System.out.println("Payment status:" + paymentSucess);
+
+            if (paymentSucess) {
+                try {
+                    boolean updateOrderSuccess = stub1.updateOrderPaid(orderID);
+
+                    if (updateOrderSuccess) {
+                        JOptionPane.showMessageDialog(null, "Make Payment Successful! \n"
+                            + "Thank you for your payment. \n"
+                            + "Please come again ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
+
+                        // Close the current frame (if needed)
+                        this.dispose();
+
+                        // Open the choose mode page
+                        ModeClient.createAndShowGUI(userID);
+                    }
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Oh no! Something went wrong. \n"
+                                + "Please proceed to the counter to make payment. \n"
+                                + "Thank you very much ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
+                    e.printStackTrace();
+                }
+            }
         } catch (RemoteException ex) {
             Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        System.out.println("Payment status:" + paymentSucess);
-        
-        if (paymentSucess) {
-            try {
-                boolean updateOrderSuccess = stub.updateOrderPaid(orderID);
-
-                if (updateOrderSuccess) {
-                    JOptionPane.showMessageDialog(null, "Make Payment Successful! \n"
-                        + "Thank you for your payment. \n"
-                        + "Please come again ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
-
-                    // Close the current frame (if needed)
-                    this.dispose();
-
-                    // Open the choose mode page
-                    ModeClient.createAndShowGUI(userID);
-                }
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Oh no! Something went wrong. \n"
-                            + "Please proceed to the counter to make payment. \n"
-                            + "Thank you very much ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
-                e.printStackTrace();
-            }
+        } catch (NotBoundException ex){
+            Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_ButtonPayActionPerformed
 

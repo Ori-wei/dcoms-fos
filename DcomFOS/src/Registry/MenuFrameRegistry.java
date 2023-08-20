@@ -9,7 +9,7 @@ import FOSInterface.MenuInterface;
 import FOSInterface.RegisterInterface;
 import Server.MakePaymentServer;
 import Server.MenuFrameServer;
-import Server.PlaceOrderServer;
+import Server.OrderPaymentServer;
 import Server.RegisterServer;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -27,19 +27,21 @@ public class MenuFrameRegistry {
 //            reg.rebind("MenuInterface", new MenuFrameServer());
 //            System.out.println("Service is ready.");
             
-            Registry reg = LocateRegistry.createRegistry(1072);
+            Registry reg = LocateRegistry.createRegistry(1070);
             //HM server
             MenuInterface menuService = new MenuFrameServer();
             reg.rebind("MenuInterface", menuService);
             System.out.println("HM Server is ready.");
+            
             //YW server
             // Calculate Bill Server
-            PlaceOrderServer calbillsserver = new PlaceOrderServer();
+            OrderPaymentServer calbillsserver = new OrderPaymentServer();
             reg.rebind("Checkout", calbillsserver);
-            // Make Payment Server
-            MakePaymentServer makepaymentserver = new MakePaymentServer();
-            reg.rebind("Payment", makepaymentserver);
+//            // Make Payment Server
+//            MakePaymentServer makepaymentserver = new MakePaymentServer();
+//            reg.rebind("Payment", makepaymentserver);           
             System.out.println("YW Server is ready.");
+            
             //MH server
             RegisterInterface registerService = new RegisterServer();
             reg.rebind("RegisterInterface", registerService);   

@@ -56,7 +56,7 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
         this.orderID = orderID;
         this.modeID = modeID;
         btnPay.setVisible(false);
-        Registry reg = LocateRegistry.getRegistry("localhost", 1072);
+        Registry reg = LocateRegistry.getRegistry("localhost", 1070);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
         List<OrderItem> orderItemList = menuService.getOrderItem(userID, orderID);
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();

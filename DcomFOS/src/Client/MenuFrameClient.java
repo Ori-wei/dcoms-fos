@@ -58,7 +58,7 @@ public class MenuFrameClient extends javax.swing.JFrame {
         this.userID=userID;
         this.modeID=modeID;
         //retrieve food table from server
-        Registry reg = LocateRegistry.getRegistry("localhost", 1072);
+        Registry reg = LocateRegistry.getRegistry("localhost", 1070);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
         List<Menu> menuList = menuService.getMenu();
         

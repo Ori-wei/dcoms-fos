@@ -58,7 +58,7 @@ public class CartFrameClient extends javax.swing.JFrame {
         btnAdd.setVisible(false);
         btnUpdate.setVisible(false);
         lbQuantity.setVisible(false);
-        Registry reg = LocateRegistry.getRegistry("localhost", 1072);
+        Registry reg = LocateRegistry.getRegistry("localhost", 1070);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
         cartID=menuService.getCartIdOnly(userID);
         List<CartItem> cartItemList = menuService.getCartItem(userID);
@@ -324,7 +324,7 @@ public class CartFrameClient extends javax.swing.JFrame {
                 if (choice == JOptionPane.YES_OPTION) 
                 {
                     // User chose "Delete"
-                    Registry reg = LocateRegistry.getRegistry("localhost", 1072);
+                    Registry reg = LocateRegistry.getRegistry("localhost", 1070);
                     MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
                     int response = menuService.deleteCartItem(foodID, userID);
                     if(response==1)
@@ -405,7 +405,7 @@ public class CartFrameClient extends javax.swing.JFrame {
             if (choice == JOptionPane.YES_OPTION) 
             {
                 // User chose "Delete"
-                Registry reg = LocateRegistry.getRegistry("localhost", 1072);
+                Registry reg = LocateRegistry.getRegistry("localhost", 1070);
                 MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
                 int response = menuService.deleteCartItem(foodID, userID);
                 if(response==1)
@@ -466,7 +466,7 @@ public class CartFrameClient extends javax.swing.JFrame {
             System.out.println("Button Update");
             quantity = Integer.parseInt(lbQuantity.getText());
             Registry reg;
-            reg = LocateRegistry.getRegistry("localhost", 1072);
+            reg = LocateRegistry.getRegistry("localhost", 1070);
             MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
             int response = menuService.updateCartItem(foodID, userID, quantity);
             if(response==1)
