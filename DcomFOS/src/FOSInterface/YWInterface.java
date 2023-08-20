@@ -25,9 +25,9 @@ public interface YWInterface extends Remote{
     
     public double calbeforeTax(List<Double> PriceList) throws RemoteException;
     
-    public double calserviceTax(double totalBFTax) throws RemoteException;
+    public double calserviceTax(double totalBFTax) throws RemoteException, InterruptedException;
     
-    public double calSST(double totalBFTax) throws RemoteException;
+    public double calSST(double totalBFTax) throws RemoteException, InterruptedException;
     
     public double calafterTax(double totalBFTax, double totalsvTax, double totalSST) throws RemoteException;
     
