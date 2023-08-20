@@ -5,6 +5,7 @@
  */
 package FOSInterface;
 
+import Client.Orders;
 import java.rmi.*;
 import java.net.*;
 import java.sql.SQLException;
@@ -17,4 +18,5 @@ public interface RegisterInterface extends Remote {
     boolean registerAccount(String username, String password, String icnumber, String firstname, String lastname) throws RemoteException;
     boolean loginAccount(String username, String password) throws RemoteException;
     int getUserID(String username) throws RemoteException;
+    public List<Orders> getOrder(int userID) throws RemoteException, SQLException;
 }

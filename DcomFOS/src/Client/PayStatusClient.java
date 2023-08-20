@@ -6,6 +6,7 @@
 package Client;
 
 import FOSInterface.MenuInterface;
+import FOSInterface.RegisterInterface;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -111,11 +112,9 @@ public class PayStatusClient extends javax.swing.JFrame {
         this.userID = userID;
         this.modeID=modeID;
         Registry reg = LocateRegistry.getRegistry("localhost", 1070);
-        MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
-        List<Orders> orderList = menuService.getOrder(userID);
-
+        RegisterInterface registerService = (RegisterInterface) reg.lookup("RegisterInterface");
+        List<Orders> orderList = registerService.getOrder(userID);
         updateOrderTable(orderList);
-        
     }
 
     /**

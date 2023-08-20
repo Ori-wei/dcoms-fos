@@ -268,38 +268,6 @@ public class MenuFrameServer extends UnicastRemoteObject implements MenuInterfac
         return orderItemList;
     }
     
-    public List<Orders> getOrder(int userID) throws RemoteException, SQLException {
-    List<Orders> orderList = new ArrayList<>();
-    Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
-    String getOrderTotal = "SELECT orderID, totalprice as total, status, modeID FROM Orders WHERE userID = ?";
-    
-    try (PreparedStatement stm1 = conn.prepareStatement(getOrderTotal)) {
-        stm1.setInt(1, userID);
-        ResultSet rs1 = stm1.executeQuery();
-        
-        while (rs1.next()) {
-            int orderID = rs1.getInt("orderID");
-            double total = rs1.getDouble("total");
-            String status = rs1.getString("status");
-            int modeID = rs1.getInt("modeID");
-            String modeName;
-            if (modeID == 1){
-                modeName = "Dine In";
-            } else{
-                modeName = "Takeaway";
-            }
-            Orders orderItem = new Orders(orderID, total, status, modeName);
-            orderList.add(orderItem);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        conn.close();
-    }
-    
-    return orderList;
-}
-
     @Override
     public int getCartIdOnly(int userID) throws RemoteException, SQLException {
         int cartID = 0;

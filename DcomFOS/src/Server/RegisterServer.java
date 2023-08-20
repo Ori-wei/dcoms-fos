@@ -5,6 +5,7 @@
  */
 package Server;
 
+import Client.Orders;
 import FOSInterface.RegisterInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -175,6 +176,56 @@ public int getUserID( String username)throws RemoteException {
         e.printStackTrace();
     }
         return UserID;
+}
+public List<Orders> getOrderDetails(int orderID) throws RemoteException, SQLException {
+        List<Orders> orderItemList = new ArrayList<>();
+        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor");
+        String getOrderTotal= "select totalprice as total, status, modeID from Orders where OrderID = " + orderID;
+        Statement stm1 = conn.createStatement();
+        ResultSet rs1 = stm1.executeQuery(getOrderTotal);
+        double total=0;
+        if (rs1.next())
+        {
+            System.out.println(rs1.getDouble("total"));
+            total = rs1.getDouble("total");
+            System.out.println("Total of OrderID gotten is: " + total);
+            Orders orderItem = new Orders(rs1.getDouble("total"), rs1.getString("status"), rs1.getInt("modeID"));
+            orderItemList.add(orderItem);
+        }
+        return orderItemList;
+    }
+    
+@Override
+    public List<Orders> getOrder(int userID) throws RemoteException, SQLException {
+    List<Orders> orderList = new ArrayList<>();
+    Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
+    String getOrderTotal = "SELECT orderID, totalprice as total, status, modeID FROM Orders WHERE userID = ?";
+    
+    try (PreparedStatement stm1 = conn.prepareStatement(getOrderTotal)) {
+        stm1.setInt(1, userID);
+        ResultSet rs1 = stm1.executeQuery();
+        
+        while (rs1.next()) {
+            int orderID = rs1.getInt("orderID");
+            double total = rs1.getDouble("total");
+            String status = rs1.getString("status");
+            int modeID = rs1.getInt("modeID");
+            String modeName;
+            if (modeID == 1){
+                modeName = "Dine In";
+            } else{
+                modeName = "Takeaway";
+            }
+            Orders orderItem = new Orders(orderID, total, status, modeName);
+            orderList.add(orderItem);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        conn.close();
+    }
+    
+    return orderList;
 }
 }
 
