@@ -83,6 +83,7 @@ public class PlaceOrderServer extends UnicastRemoteObject implements YWInterface
         return totalbfTax;
     }
     
+//    // Without Multithreading
 //    // function calserviceTax
 //    
 //    @Override
@@ -101,29 +102,23 @@ public class PlaceOrderServer extends UnicastRemoteObject implements YWInterface
 //        return totalSST;
 //    }
     
-    public double calserviceTax(double totalBFTax) throws RemoteException {
-        //CalculateTaxesMultithreading.svTaxCalculator svThread = new CalculateTaxesMultithreading.svTaxCalculator(totalBFTax);
+    // With multithreading
+    
+    @Override
+    public double calserviceTax(double totalBFTax) throws RemoteException, InterruptedException {
         CalculateTaxesMultithreading.svTaxCalculator svThread = new CalculateTaxesMultithreading.svTaxCalculator();
         svThread.setTotalBFTax(totalBFTax);
         svThread.start();
-        try {
-            svThread.join(); // Wait for the thread to complete
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        svThread.join();
         return svThread.getTotalsvTax();
     }
     
-    public double calSST(double totalBFTax) throws RemoteException {
-        //CalculateTaxesMultithreading.SSTCalculator sstThread = new CalculateTaxesMultithreading.SSTCalculator(totalBFTax);
+    @Override
+    public double calSST(double totalBFTax) throws RemoteException, InterruptedException {
         CalculateTaxesMultithreading.SSTCalculator sstThread = new CalculateTaxesMultithreading.SSTCalculator();
         sstThread.setTotalBFTax(totalBFTax);
         sstThread.start();
-        try {
-            sstThread.join(); // Wait for the thread to complete
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sstThread.join();
         return sstThread.getTotalSST();
     }
 

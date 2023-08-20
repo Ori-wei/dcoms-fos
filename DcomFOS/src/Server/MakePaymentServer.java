@@ -87,12 +87,12 @@ public class MakePaymentServer extends UnicastRemoteObject implements YWInterfac
     }
 
     @Override
-    public double calserviceTax(double totalBFTax) throws RemoteException {
+    public double calserviceTax(double totalBFTax) throws RemoteException, InterruptedException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public double calSST(double totalBFTax) throws RemoteException {
+    public double calSST(double totalBFTax) throws RemoteException, InterruptedException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
