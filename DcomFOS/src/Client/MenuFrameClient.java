@@ -64,11 +64,19 @@ public class MenuFrameClient extends javax.swing.JFrame {
         
 //        MenuInterface obj = (MenuInterface)Naming.lookup("rmi://localhost:1072/getMenu");
 //        obj.viewMenu();
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = new DefaultTableModel() 
+        {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Every cell is non-editable.
+            }
+        };
         //define column
         model.setColumnIdentifiers(new Object[]{"FoodID", "FoodName", "Price"});
         //clear existing data
         model.setRowCount(0);
+        jTable1.setModel(model);
+        //DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         //insert data from MenuList into table row by row
         try {
             for (Menu menu : menuList) {

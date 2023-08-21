@@ -62,7 +62,16 @@ public class CartFrameClient extends javax.swing.JFrame {
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
         cartID=menuService.getCartIdOnly(userID);
         List<CartItem> cartItemList = menuService.getCartItem(userID);
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Every cell is non-editable.
+            }
+        };
+
+        model.setColumnIdentifiers(new Object[]{"FoodID", "FoodName", "Price"});
+        jTable1.setModel(model);
+        //DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setColumnIdentifiers(new Object[]{"FoodID", "FoodName","Quantity", "Price", "Total"});
         model.setRowCount(0);
         try {
@@ -100,7 +109,6 @@ public class CartFrameClient extends javax.swing.JFrame {
         btnUpdate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(626, 626));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -168,9 +176,6 @@ public class CartFrameClient extends javax.swing.JFrame {
         });
 
         btnCheckout.setText("Checkout");
-        btnCheckout.setMaximumSize(new java.awt.Dimension(80, 28));
-        btnCheckout.setMinimumSize(new java.awt.Dimension(80, 28));
-        btnCheckout.setPreferredSize(new java.awt.Dimension(80, 28));
         btnCheckout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCheckoutActionPerformed(evt);
@@ -255,7 +260,7 @@ public class CartFrameClient extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnCheckout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnCheckout))
                         .addGap(17, 17, 17))))
         );
 

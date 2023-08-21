@@ -56,6 +56,9 @@ public class FoodDetailFrameClient extends javax.swing.JFrame {
         System.out.println("userid is: " + userID);
         System.out.println("modeid is: " + modeID);
         lbFoodId.setVisible(false);
+        tfFoodName.setEditable(false);
+        tfPrice.setEditable(false);
+        tfDescription.setEditable(false);
         //retrieve food table from server
         Registry reg = LocateRegistry.getRegistry("localhost", 1070);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");

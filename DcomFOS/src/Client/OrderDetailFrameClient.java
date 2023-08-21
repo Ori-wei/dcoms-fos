@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -56,12 +57,20 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
         this.orderID = orderID;
         this.modeID = modeID;
         btnPay.setVisible(false);
+        tfTotal.setEditable(false);
         Registry reg = LocateRegistry.getRegistry("localhost", 1070);
         MenuInterface menuService = (MenuInterface) reg.lookup("MenuInterface");
         List<OrderItem> orderItemList = menuService.getOrderItem(userID, orderID);
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Every cell is non-editable.
+            }
+        };
         model.setColumnIdentifiers(new Object[]{"FoodID", "FoodName","Quantity", "Price", "Total"});
         model.setRowCount(0);
+        jTable1.setModel(model);
+        //DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); 
         try {
             for (OrderItem orderItem : orderItemList) {
                 double total =0;
