@@ -28,8 +28,8 @@ public class app {
 //        }
         //MH
         //PayStatusClient.createAndShowGUI(2, 1);
-        RegisterClient.createAndShowGUI();
+        //RegisterClient.createAndShowGUI();
         //HM
-        //MenuFrameClient.createAndShowGUI();
+        MenuFrameClient.createAndShowGUI(2,1);
     }
 }

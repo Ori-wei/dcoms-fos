@@ -5,7 +5,7 @@
  */
 package FOSInterface;
 
-import Client.Orders;
+import DatabaseObject.Orders;
 import java.rmi.*;
 import java.net.*;
 import java.sql.SQLException;

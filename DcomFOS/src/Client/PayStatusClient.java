@@ -5,6 +5,7 @@
  */
 package Client;
 
+import DatabaseObject.Orders;
 import FOSInterface.MenuInterface;
 import FOSInterface.RegisterInterface;
 import java.net.MalformedURLException;

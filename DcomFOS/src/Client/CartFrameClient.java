@@ -5,6 +5,7 @@
  */
 package Client;
 
+import DatabaseObject.CartItem;
 import FOSInterface.MenuInterface;
 import java.net.MalformedURLException;
 import java.rmi.AccessException;

@@ -10,8 +10,8 @@ package Server;
  * @author ASUS
  */
 
-import Client.CartItem;
-import Client.OrderItem;
+import DatabaseObject.CartItem;
+import DatabaseObject.OrderItem;
 import java.rmi.*;
 import java.net.*;
 import java.rmi.server.UnicastRemoteObject;

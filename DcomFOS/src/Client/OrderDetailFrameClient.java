@@ -5,6 +5,8 @@
  */
 package Client;
 
+import DatabaseObject.OrderItem;
+import DatabaseObject.Orders;
 import FOSInterface.MenuInterface;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
