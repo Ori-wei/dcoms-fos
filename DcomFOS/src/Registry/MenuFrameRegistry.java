@@ -34,12 +34,8 @@ public class MenuFrameRegistry {
             System.out.println("HM Server is ready.");
             
             //YW server
-            // Calculate Bill Server
             OrderPaymentServer calbillsserver = new OrderPaymentServer();
-            reg.rebind("Checkout", calbillsserver);
-//            // Make Payment Server
-//            MakePaymentServer makepaymentserver = new MakePaymentServer();
-//            reg.rebind("Payment", makepaymentserver);           
+            reg.rebind("Checkout", calbillsserver);       
             System.out.println("YW Server is ready.");
             
             //MH server
