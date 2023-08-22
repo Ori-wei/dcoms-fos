@@ -10,16 +10,11 @@ package Client;
  * @author ASUS
  */
 
-import FOSInterface.MenuInterface;
 import java.rmi.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.SQLException;
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.*;
 import javax.swing.table.DefaultTableModel;
 import FOSInterface.YWInterface;
@@ -333,18 +328,9 @@ public class PlaceOrderClient extends javax.swing.JFrame {
             // fix value
             String price = TFafterTax.getText();
             double totalprice = Double.parseDouble(price);
-            String status = "unpaid";
+            String status = "UNPAID";
 
             // put into db
-            //YWInterface stub = null;
-
-    //        try {
-    //            stub = (YWInterface)Naming.lookup("rmi://localhost:1070/Checkout");
-    //        } catch(Exception e) {
-    //            System.out.println("Stub error:");
-    //            e.printStackTrace();
-    //        }
-
             Registry reg = LocateRegistry.getRegistry("localhost", 1070);
             YWInterface stub = (YWInterface) reg.lookup("Checkout");
 
