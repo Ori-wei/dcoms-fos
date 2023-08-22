@@ -10,7 +10,7 @@ package FOSInterface;
  * @author ASUS
  */
 
-import Client.CartItem;
+import DatabaseObject.CartItem;
 import java.rmi.*;
 import java.sql.SQLException;
 import java.sql.Timestamp;

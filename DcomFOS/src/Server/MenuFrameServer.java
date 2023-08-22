@@ -5,10 +5,10 @@
  */
 package Server;
 
-import Client.CartItem;
-import Client.Menu;
-import Client.OrderItem;
-import Client.Orders;
+import DatabaseObject.CartItem;
+import DatabaseObject.Menu;
+import DatabaseObject.OrderItem;
+import DatabaseObject.Orders;
 import FOSInterface.MenuInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -194,16 +194,7 @@ public class MenuFrameServer extends UnicastRemoteObject implements MenuInterfac
         }     
         if(nrow>0)
         {
-            System.out.println("Cart Item found. Deleting...");
-//            String nextCartItemIdQuery = "select count(*) from CartItem";
-//            Statement stm3 = conn.createStatement();
-//            ResultSet rs3 = stm3.executeQuery(nextCartItemIdQuery);
-//            int nextID = 0; 
-//            if(rs3.next())
-//            {
-//                nextID = rs3.getInt(1)+1;
-//            }
-//            System.out.println("Next CartItemId is: " + nextID);        
+            System.out.println("Cart Item found. Deleting...");     
             String deleteCartItem = "DELETE from CartItem where CartID = " + cartID + " and foodID = " + foodID;          
             Statement stm4 = conn.createStatement();
             int rs4 = stm4.executeUpdate(deleteCartItem);
@@ -230,15 +221,6 @@ public class MenuFrameServer extends UnicastRemoteObject implements MenuInterfac
         int cartID = 0;
         List<OrderItem> orderItemList = new ArrayList<>();
         Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS","root","toor");
-//        String checkCartOwnerID = "select * from Cart where UserID = " + userID;
-//        Statement stm1 = conn.createStatement();
-//        ResultSet rs1 = stm1.executeQuery(checkCartOwnerID);
-//        if (rs1.next())
-//        {
-//            System.out.println(rs1.getInt("CartID"));
-//            cartID = rs1.getInt("CartID");
-//            System.out.println("CartID gotten is: " + cartID);
-//        }
         String getOrderItem = "SELECT OrderItem.OrderItemID, OrderItem.OrderID, OrderItem.FoodID, OrderItem.Quantity, OrderItem.Price, Food.FoodName FROM OrderItem JOIN Food ON Food.FoodID = OrderItem.FoodID WHERE OrderItem.OrderID = " + orderID;
         Statement stm2 = conn.createStatement();
         ResultSet rs2 = stm2.executeQuery(getOrderItem);

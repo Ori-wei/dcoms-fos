@@ -5,9 +5,11 @@
  */
 package Client;
 
+import DatabaseObject.Menu;
 import javax.swing.table.DefaultTableModel;
 import FOSInterface.MenuInterface;
 import Server.MenuFrameServer;
+import java.awt.Dimension;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -55,6 +58,9 @@ public class MenuFrameClient extends javax.swing.JFrame {
     public MenuFrameClient(int userID, int modeID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         
         initComponents();
+        btnPayStatus.setPreferredSize(new Dimension(400, btnPayStatus.getPreferredSize().height));
+        btnPayStatus.invalidate();
+        btnPayStatus.repaint();
         this.userID=userID;
         this.modeID=modeID;
         //retrieve food table from server
@@ -265,6 +271,11 @@ public class MenuFrameClient extends javax.swing.JFrame {
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         // TODO add your handling code here:
+        
+        if (foodID == 0) {
+            JOptionPane.showMessageDialog(this, "Please select an item and try again.");
+            return; // Return to stop executing the method
+        }
         System.out.println("hi next btn");
         FoodDetailFrameClient.createAndShowGUI(foodID, userID, modeID);
         this.dispose();
@@ -273,6 +284,7 @@ public class MenuFrameClient extends javax.swing.JFrame {
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
         ModeClient.createAndShowGUI(userID);
+        this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartActionPerformed

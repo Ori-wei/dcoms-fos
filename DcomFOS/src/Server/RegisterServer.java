@@ -5,7 +5,7 @@
  */
 package Server;
 
-import Client.Orders;
+import DatabaseObject.Orders;
 import FOSInterface.RegisterInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

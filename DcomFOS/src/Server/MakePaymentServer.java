@@ -5,7 +5,7 @@
  */
 package Server;
 
-import Client.CartItem;
+import DatabaseObject.CartItem;
 import FOSInterface.YWInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

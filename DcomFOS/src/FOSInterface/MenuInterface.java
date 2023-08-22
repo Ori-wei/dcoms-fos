@@ -5,14 +5,14 @@
  */
 package FOSInterface;
 
-import Client.CartItem;
+import DatabaseObject.CartItem;
 import java.rmi.*;
 import java.net.*;
 import java.sql.SQLException;
 import java.util.List;
-import Client.Menu;
-import Client.OrderItem;
-import Client.Orders;
+import DatabaseObject.Menu;
+import DatabaseObject.OrderItem;
+import DatabaseObject.Orders;
 
 // this interface is a Remote interface. Placing this interface in a seperated system
 public interface MenuInterface extends Remote { //Must have extends Remote keyword

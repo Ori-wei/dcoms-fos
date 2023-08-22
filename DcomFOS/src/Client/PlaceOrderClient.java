@@ -10,6 +10,7 @@ package Client;
  * @author ASUS
  */
 
+import DatabaseObject.CartItem;
 import java.rmi.*;
 import java.net.*;
 import java.util.logging.Level;

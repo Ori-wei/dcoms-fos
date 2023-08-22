@@ -21,24 +21,20 @@ import java.rmi.registry.Registry;
  */
 public class MenuFrameRegistry {
     public static void main(String[] args) throws RemoteException {
-        try {
-//            MenuFrameServer obj = new MenuFrameServer();
-//            Registry reg = LocateRegistry.createRegistry(1072);
-//            reg.rebind("MenuInterface", new MenuFrameServer());
-//            System.out.println("Service is ready.");
-            
+        try {           
             Registry reg = LocateRegistry.createRegistry(1070);
-            //HM server
+            //Kong Hao Ming server
             MenuInterface menuService = new MenuFrameServer();
             reg.rebind("MenuInterface", menuService);
             System.out.println("HM Server is ready.");
             
-            //YW server
+            //Loh Yuen Wei server
+            // Calculate Bill Server
             OrderPaymentServer calbillsserver = new OrderPaymentServer();
-            reg.rebind("Checkout", calbillsserver);       
+            reg.rebind("Checkout", calbillsserver);        
             System.out.println("YW Server is ready.");
             
-            //MH server
+            //Malcolm Heng server
             RegisterInterface registerService = new RegisterServer();
             reg.rebind("RegisterInterface", registerService);   
             System.out.println("MH Server is ready!");
