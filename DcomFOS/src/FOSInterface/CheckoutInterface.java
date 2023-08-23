@@ -10,15 +10,15 @@ package FOSInterface;
  * @author ASUS
  */
 
-import DatabaseObject.CartItem;
 import java.rmi.*;
+import java.util.List;
+import DatabaseObject.CartItem;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.List;
 
-public interface YWInterface extends Remote{
+public interface CheckoutInterface extends Remote{
     
-    // YW - Calculate Bills Function
+    // YW - Place Order Function
     public List<CartItem> cartItemRetrieval(int cartid) throws RemoteException, SQLException;
     
     public double calindifoodPrice(double price, int quantity) throws RemoteException;
@@ -35,7 +35,7 @@ public interface YWInterface extends Remote{
     
     public void moveCartItemToOrderItem(int cartID, int orderID, double price) throws RemoteException, SQLException;
     
-    // YW - Make Payment
+    // YW - Make Payment Function
     public boolean makePayment(int orderid, double amount, String paymentMethod, Timestamp paymentDT) throws RemoteException, SQLException;
     
     public boolean updateOrderPaid(int orderid) throws RemoteException, SQLException;

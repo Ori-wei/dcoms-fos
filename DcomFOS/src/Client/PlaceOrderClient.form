@@ -227,7 +227,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Total Before Tax:"/>
+        <Property name="text" type="java.lang.String" value="Gross Total (RM):"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="TFbeforeTax">
@@ -238,7 +238,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Total After Tax:"/>
+        <Property name="text" type="java.lang.String" value="Net Total (RM):"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="TFafterTax">

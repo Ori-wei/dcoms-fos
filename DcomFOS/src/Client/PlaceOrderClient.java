@@ -18,10 +18,10 @@ import java.util.logging.Logger;
 import java.sql.SQLException;
 import java.util.*;
 import javax.swing.table.DefaultTableModel;
-import FOSInterface.YWInterface;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import javax.swing.JOptionPane;
+import FOSInterface.CheckoutInterface;
 
 public class PlaceOrderClient extends javax.swing.JFrame {
     
@@ -73,18 +73,8 @@ public class PlaceOrderClient extends javax.swing.JFrame {
         double amountwithSST;
         double amountafTax;
         
-        
-//        YWInterface stub = null;
-//        try {
-//            stub = (YWInterface)Naming.lookup("rmi://localhost:1070/Checkout");
-//            
-//        } catch (RemoteException | MalformedURLException | NotBoundException e) {
-//            System.out.println("Stub error:");
-//            e.printStackTrace();
-//        }
-        
         Registry reg = LocateRegistry.getRegistry("localhost", 1070);
-        YWInterface stub = (YWInterface) reg.lookup("Checkout");
+        CheckoutInterface stub = (CheckoutInterface) reg.lookup("Checkout");
         
         
         // Retrieve data and insert table
@@ -333,7 +323,7 @@ public class PlaceOrderClient extends javax.swing.JFrame {
 
             // put into db
             Registry reg = LocateRegistry.getRegistry("localhost", 1070);
-            YWInterface stub = (YWInterface) reg.lookup("Checkout");
+            CheckoutInterface stub = (CheckoutInterface) reg.lookup("Checkout");
 
             int orderID = 0;
         
