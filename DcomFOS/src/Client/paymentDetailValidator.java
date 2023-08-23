@@ -17,7 +17,8 @@ import javax.swing.event.DocumentListener;
  */
 public class paymentDetailValidator {
     
-    public static void addValidation(JTextField[] textField, List<Function<String, String>> validation, JLabel[] warningLabels, JButton btn) {
+    public static void addValidation(JTextField[] textField, List<Function<String, String>> validation, 
+            JLabel[] warningLabels, JButton btn) {
         boolean[] validationResults = new boolean[textField.length];
         System.out.println("Hi i am called");
         
@@ -61,7 +62,6 @@ public class paymentDetailValidator {
         }
     }
     
-    
     public static String validateCardNo(String cardno){
         // validate cardNo digits
         System.out.println("cardNo");
@@ -72,13 +72,42 @@ public class paymentDetailValidator {
         }
     }
     
-    public static String validateExpDate(String expdate){
-        // validate expiry date
-        System.out.println("expCvv");
-        if(expdate.length() != 2 || !expdate.matches("\\d{2}")){
-        return "Please enter 2 digits.";
-        }else{
-        return "";
+    public static String validateExpMonth(String expdate1){
+        // validate expiry month
+        System.out.println("expMonth");
+        if(expdate1.length() != 2 || !expdate1.matches("\\d{2}")){
+        return "Please enter 2 digits for month.";
+        }
+        return validateMonth(expdate1);
+    }
+    
+    public static String validateMonth(String month){
+        System.out.println("Month");
+        int m = Integer.parseInt(month);
+        if (m < 1 || m > 12) {
+            return "Please enter a number \n"
+                    + "between 01 and 12.";
+        } else {
+            return "";
+        }
+    }
+    
+    public static String validateExpYear(String expdate2){
+        // validate expiry year
+        System.out.println("expYear");
+        if(expdate2.length() != 2 || !expdate2.matches("\\d{2}")){
+        return "Please enter 2 digits for year.";
+        }
+        return validateYear(expdate2);
+    }
+    
+    public static String validateYear(String year){
+        System.out.println("Month");
+        int y = Integer.parseInt(year);
+        if (y < 23 || y > 27) {
+            return "Please enter a valid year.";
+        } else {
+            return "";
         }
     }
     
