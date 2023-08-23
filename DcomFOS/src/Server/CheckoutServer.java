@@ -185,17 +185,19 @@ public class CheckoutServer extends UnicastRemoteObject implements CheckoutInter
         conn.close();
     }
 
+    boolean makePaymentSuccess;
     @Override
-    public boolean makePayment(int orderid, double amount, String paymentMethod, Timestamp paymentDT) throws RemoteException, SQLException{
+    public boolean makePayment(int orderid, double amount, String paymentMethod, Timestamp paymentDT) 
+            throws RemoteException, SQLException{
         // function success indicator
-        // fail = 0, success = 1
-        boolean makePaymentSuccess = false;
+        makePaymentSuccess = false;
         
         // connect to payment db
         Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
         System.out.println(conn);
         Statement stmt = conn.createStatement();
-        String query = "INSERT INTO PAYMENT (OrderID, Amount, PaymentMethod, PaymentDateTime) VALUES (" + orderid + ", " + amount + ", '" + paymentMethod + "', '" + paymentDT + "')";
+        String query = "INSERT INTO PAYMENT (OrderID, Amount, PaymentMethod, PaymentDateTime)"
+                + " VALUES (" + orderid + ", " + amount + ", '" + paymentMethod + "', '" + paymentDT + "')";
         int rs = stmt.executeUpdate(query);
         
         //saving the transaction, close
@@ -207,14 +209,14 @@ public class CheckoutServer extends UnicastRemoteObject implements CheckoutInter
         
         // return boolean
         return makePaymentSuccess = true;
-    
     }
 
+    boolean updateOrderStatus;
     @Override
     public boolean updateOrderPaid(int orderid) throws RemoteException, SQLException{
         // function success indicator
         // fail = 0, success = 1
-        boolean updateOrderStatus = false;
+        updateOrderStatus = false;
         
         // establish connection
         Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");

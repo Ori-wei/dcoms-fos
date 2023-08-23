@@ -195,9 +195,9 @@ public class PlaceOrderClient extends javax.swing.JFrame {
 
         jLabel4.setText("SST (6%):");
 
-        jLabel5.setText("Total Before Tax:");
+        jLabel5.setText("Gross Total (RM):");
 
-        jLabel6.setText("Total After Tax:");
+        jLabel6.setText("Net Total (RM):");
 
         ButtonOrder.setText("Place Order >");
         ButtonOrder.addMouseListener(new java.awt.event.MouseAdapter() {
