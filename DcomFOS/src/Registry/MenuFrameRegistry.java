@@ -28,7 +28,6 @@ public class MenuFrameRegistry {
             System.out.println("HM Server is ready.");
             
             //Loh Yuen Wei server
-            // Calculate Bill Server
             CheckoutServer checkout = new CheckoutServer();
             reg.rebind("Checkout", checkout);        
             System.out.println("YW Server is ready.");

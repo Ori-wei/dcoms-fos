@@ -58,6 +58,7 @@ public class MenuFrameClient extends javax.swing.JFrame {
     public MenuFrameClient(int userID, int modeID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         
         initComponents();
+        this.setLocationRelativeTo(null);
         btnPayStatus.setPreferredSize(new Dimension(400, btnPayStatus.getPreferredSize().height));
         btnPayStatus.invalidate();
         btnPayStatus.repaint();
@@ -86,7 +87,7 @@ public class MenuFrameClient extends javax.swing.JFrame {
         //insert data from MenuList into table row by row
         try {
             for (Menu menu : menuList) {
-                model.addRow(new Object[]{menu.getFoodId(), menu.getFoodName(), menu.getPrice()});     
+                model.addRow(new Object[]{menu.getFoodId(), menu.getFoodName(), String.format("%.2f", menu.getPrice())});     
             }
             //Problem in jtable infinity loop
         } catch (Exception e) {

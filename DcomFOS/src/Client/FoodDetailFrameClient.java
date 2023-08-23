@@ -51,6 +51,7 @@ public class FoodDetailFrameClient extends javax.swing.JFrame {
     }
     public FoodDetailFrameClient(int foodID, int userID, int modeID) throws RemoteException, NotBoundException, SQLException {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.userID=userID;
         this.foodID=foodID;
         this.modeID=modeID;
@@ -72,7 +73,7 @@ public class FoodDetailFrameClient extends javax.swing.JFrame {
                         Menu menu = foodDetailList.get(0); // Get the first element
 
                         tfFoodName.setText(menu.getFoodName());
-                        tfPrice.setText(String.valueOf(menu.getPrice()));
+                        tfPrice.setText(String.format("%.2f", menu.getPrice()));
                         tfDescription.setText(menu.getDescription());
                         lbCategory.setText(menu.getCategory() + " Detail");
                         lbFoodId.setText(String.valueOf(foodID));           

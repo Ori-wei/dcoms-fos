@@ -100,21 +100,25 @@ public class PlaceOrderClient extends javax.swing.JFrame {
         //test calfoodPrice
         for (int record = 0; record < tm.getRowCount(); record++) {
             int Quantity = (int) tm.getValueAt(record, 1);
-            double Price = (double) tm.getValueAt(record, 2);
+            double Price = (double) tm.getValueAt(record, 2); 
             double indiFoodPrice = stub.calindifoodPrice(Price, Quantity);
-            tm.setValueAt(indiFoodPrice, record, 3);
+            String formattedfoodPrice = String.format("%.2f", indiFoodPrice);
+            tm.setValueAt(formattedfoodPrice, record, 3);
         }
 
         //test calbeforeTax
         List<Double> pricelist = new ArrayList<>();
          for (int record = 0; record < tm.getRowCount(); record++) {
-           double foodPrice = (double)tm.getValueAt(record, 3);
-          pricelist.add(foodPrice);
+           int Quantity = (int) tm.getValueAt(record, 1);
+           double Price = (double) tm.getValueAt(record, 2);
+           double indiFoodPrice = stub.calindifoodPrice(Price, Quantity);
+          pricelist.add(indiFoodPrice);
         }
         System.out.println(pricelist);
         amountBFTax = stub.calbeforeTax(pricelist);
         System.out.println("From server calBeforeTax" + amountBFTax);
-        TFbeforeTax.setText(String.valueOf(amountBFTax));
+        String formattedAmountbfTax = String.format("%.2f", amountBFTax);
+        TFbeforeTax.setText(String.valueOf(formattedAmountbfTax));
 
         // Multithreading
         //test calserviceTax

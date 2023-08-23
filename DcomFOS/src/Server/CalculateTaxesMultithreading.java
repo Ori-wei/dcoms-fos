@@ -4,13 +4,6 @@
  * and open the template in the editor.
  */
 package Server;
-
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import FOSInterface.CheckoutInterface;
-
 /**
  *
  * @author ASUS
