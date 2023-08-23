@@ -110,6 +110,7 @@ public class PayStatusClient extends javax.swing.JFrame {
     
     public PayStatusClient(int userID, int modeID)  throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.userID = userID;
         this.modeID=modeID;
         Registry reg = LocateRegistry.getRegistry("localhost", 1070);

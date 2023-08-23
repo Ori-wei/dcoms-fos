@@ -51,6 +51,7 @@ public class CartFrameClient extends javax.swing.JFrame {
     } 
     public CartFrameClient(int userID, int modeID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.userID=userID;
         this.modeID=modeID;
         btnEdit.setVisible(false);
@@ -79,7 +80,7 @@ public class CartFrameClient extends javax.swing.JFrame {
             for (CartItem cartItem : cartItemList) {
                 double total =0;
                 total=cartItem.getQuantity()*cartItem.getPrice();
-                model.addRow(new Object[]{cartItem.getFoodId(), cartItem.getFoodname(), cartItem.getQuantity(), cartItem.getPrice(), total});     
+                model.addRow(new Object[]{cartItem.getFoodId(), cartItem.getFoodname(), cartItem.getQuantity(),String.format("%.2f", cartItem.getPrice()), String.format("%.2f", total)});     
             }
         } catch (Exception e) {
             e.printStackTrace();

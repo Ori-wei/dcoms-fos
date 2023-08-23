@@ -55,6 +55,7 @@ public class RegisterClient extends javax.swing.JFrame {
     }
     public RegisterClient() throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
+        this.setLocationRelativeTo(null);
         Registry reg = LocateRegistry.getRegistry("localhost", 1070);
         registerService = (RegisterInterface) reg.lookup("RegisterInterface");
         //registerService.registerAccount(); 

@@ -55,6 +55,7 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
     } 
     public OrderDetailFrameClient(int userID, int orderID, int modeID) throws NotBoundException, MalformedURLException, RemoteException, SQLException {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.userID = userID;
         this.orderID = orderID;
         this.modeID = modeID;
@@ -77,7 +78,7 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
             for (OrderItem orderItem : orderItemList) {
                 double total =0;
                 total=orderItem.getQuantity()*orderItem.getPrice();
-                model.addRow(new Object[]{orderItem.getFoodId(), orderItem.getFoodname(), orderItem.getQuantity(), orderItem.getPrice(), total});     
+                model.addRow(new Object[]{orderItem.getFoodId(), orderItem.getFoodname(), orderItem.getQuantity(), String.format("%.2f", orderItem.getPrice()), String.format("%.2f", total)});     
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -119,7 +119,7 @@ public class MakePaymentClient extends javax.swing.JFrame {
         debitRadio.setSelected(true);
         
         // Set amount = TFafterTax
-        TFamount.setText(String.valueOf(totalprice));
+        TFamount.setText(String.format("%.2f", totalprice));
         TFamount.setEditable(false);
         
         // Disable button
@@ -156,7 +156,7 @@ public class MakePaymentClient extends javax.swing.JFrame {
         debitRadio.setSelected(true);
     
         // Set amount = TFafterTax
-        TFamount.setText(String.valueOf(totalprice));
+        TFamount.setText(String.format("%.2f", totalprice));
         TFamount.setEditable(false);
         
         // Disable button

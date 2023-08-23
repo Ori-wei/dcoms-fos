@@ -43,6 +43,7 @@ public class ModeClient extends javax.swing.JFrame {
     
     public ModeClient() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
