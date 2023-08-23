@@ -112,7 +112,7 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
         {
             lbMode.setText("Mode");
         }
-        if(status.matches("unpaid"))
+        if(status.matches("UNPAID"))
         {
             btnPay.setVisible(true);
         }
@@ -297,7 +297,7 @@ public class OrderDetailFrameClient extends javax.swing.JFrame {
     private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
         System.out.println("Go to YW makePayment page");
         MakePaymentClient.createAndShowGUI(userID, orderID, totalPrice);
-        
+        this.dispose();
     }//GEN-LAST:event_btnPayActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

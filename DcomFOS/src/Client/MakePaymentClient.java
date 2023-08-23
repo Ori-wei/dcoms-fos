@@ -6,7 +6,6 @@
 package Client;
 
 import static Client.paymentDetailValidator.addValidation;
-import FOSInterface.YWInterface;
 import javax.swing.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -20,6 +19,7 @@ import java.util.Enumeration;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import FOSInterface.CheckoutInterface;
 
 /**
  *
@@ -387,7 +387,7 @@ public class MakePaymentClient extends javax.swing.JFrame {
             
             // put into db
             Registry reg = LocateRegistry.getRegistry("localhost", 1070);
-            YWInterface stub1 = (YWInterface) reg.lookup("Checkout");
+            CheckoutInterface stub1 = (CheckoutInterface) reg.lookup("Checkout");
    
             boolean paymentSucess = false;
         

@@ -7,9 +7,8 @@ package Registry;
 
 import FOSInterface.MenuInterface;
 import FOSInterface.RegisterInterface;
-import Server.MakePaymentServer;
+import Server.CheckoutServer;
 import Server.MenuFrameServer;
-import Server.OrderPaymentServer;
 import Server.RegisterServer;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -30,8 +29,8 @@ public class MenuFrameRegistry {
             
             //Loh Yuen Wei server
             // Calculate Bill Server
-            OrderPaymentServer calbillsserver = new OrderPaymentServer();
-            reg.rebind("Checkout", calbillsserver);        
+            CheckoutServer checkout = new CheckoutServer();
+            reg.rebind("Checkout", checkout);        
             System.out.println("YW Server is ready.");
             
             //Malcolm Heng server

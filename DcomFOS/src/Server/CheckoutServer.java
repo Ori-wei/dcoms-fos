@@ -11,9 +11,7 @@ package Server;
  */
 
 import DatabaseObject.CartItem;
-import DatabaseObject.OrderItem;
 import java.rmi.*;
-import java.net.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,33 +20,31 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.table.DefaultTableModel;
-import FOSInterface.YWInterface;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import FOSInterface.CheckoutInterface;
 
-public class OrderPaymentServer extends UnicastRemoteObject implements YWInterface{
+public class CheckoutServer extends UnicastRemoteObject implements CheckoutInterface{
     
-    public OrderPaymentServer() throws RemoteException{
+    public CheckoutServer() throws RemoteException{
         super();
     }
     
+    @Override
     public List<CartItem> cartItemRetrieval(int cartid) throws RemoteException, SQLException{
-        // cartItem list
+        // create a cartItem list
         List<CartItem> cartItemList = new ArrayList<>();
 
-        // connect with Cart DB and display to jtable
+        // establish connection
         Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
-        
-        //if connection successful, this msg will print
-        System.out.println("Connected");
         
         //retrieve cart items
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT FOOD.FOODNAME, CARTITEM.QUANTITY, FOOD.PRICE FROM FOOD JOIN CARTITEM ON FOOD.FOODID = CARTITEM.FOODID WHERE CARTITEM.CARTID = " + cartid);
+        ResultSet rs = stmt.executeQuery("SELECT FOOD.FOODNAME, CARTITEM.QUANTITY, "
+                + "FOOD.PRICE FROM FOOD JOIN CARTITEM "
+                + "ON FOOD.FOODID = CARTITEM.FOODID WHERE CARTITEM.CARTID = " + cartid);
         
+        // store the cart items into the list
         while (rs.next()){
             String foodname = rs.getString("FOODNAME");
             int quantity = rs.getInt("QUANTITY");
@@ -82,26 +78,7 @@ public class OrderPaymentServer extends UnicastRemoteObject implements YWInterfa
         }
         return totalbfTax;
     }
-    
-//    // Without Multithreading
-//    // function calserviceTax
-//    
-//    @Override
-//    public double calserviceTax(double totalBFTax) throws RemoteException{
-//        //totalsvTax = 0;
-//        double totalsvTax = 0;
-//        totalsvTax = 10.00 * totalBFTax / 100;
-//        return totalsvTax;
-//    }
-//    
-//    // function calSST
-//    @Override
-//    public double calSST(double totalBFTax) throws RemoteException{
-//        double totalSST = 0;
-//        totalSST = 6.0 * totalBFTax / 100; 
-//        return totalSST;
-//    }
-    
+
     // With multithreading
     @Override
     public double calserviceTax(double totalBFTax) throws RemoteException, InterruptedException {
@@ -112,6 +89,7 @@ public class OrderPaymentServer extends UnicastRemoteObject implements YWInterfa
         return svThread.getTotalsvTax();
     }
     
+    // With multithreading
     @Override
     public double calSST(double totalBFTax) throws RemoteException, InterruptedException {
         CalculateTaxesMultithreading.SSTCalculator sstThread = new CalculateTaxesMultithreading.SSTCalculator();
@@ -130,68 +108,72 @@ public class OrderPaymentServer extends UnicastRemoteObject implements YWInterfa
     }
     
     // function placeOrder
+    int orderID;
     @Override
     public int placeOrder(int userid, int cartid, int modeid, double totalprice, String status) throws RemoteException, SQLException{
-        // initialize orderID
-        int orderID = 0;
+        // set orderID
+        orderID = 0;
         
         // connect with Order DB
         Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
         
-        String query = "INSERT INTO ORDERS (UserID, CartID, ModeID, TotalPrice, Status) VALUES ("+ userid + "," + cartid + "," + modeid + "," + totalprice + ",'" + status + "')";
-        
-        try {
-            PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            int rs = stmt.executeUpdate();
-        
-            // return orderID
-            if (rs > 0) {
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        orderID = generatedKeys.getInt(1);
-                        System.out.println("Generated orderID: " + orderID);
-                    }
+        // set query
+        String query = "INSERT INTO ORDERS (UserID, CartID, ModeID, TotalPrice, Status) "
+                + "VALUES ("+ userid + "," + cartid + "," + modeid + "," + totalprice + ",'" + status + "')";
+        PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        int rs = stmt.executeUpdate();
+
+        // return orderID
+        if (rs > 0) {
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    orderID = generatedKeys.getInt(1);
+                    System.out.println("Generated orderID: " + orderID);
                 }
             }
-            
-            //saving the transaction, close
-            conn.commit();
-            conn.close();
-            
-            // successful msg
-            System.out.println("Place order successful ^^~");
-            System.out.println("Order ID is: " + orderID);
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
+        //saving the transaction, close
+        conn.commit();
+        conn.close();
         
+        // call moveCartItemToOrderItem method
         moveCartItemToOrderItem(cartid, orderID, totalprice);
         
         return orderID;
     }
     
+    @Override
     public void moveCartItemToOrderItem(int cartID, int orderID, double price) throws RemoteException, SQLException{
-        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
-        Statement stmt = conn.createStatement();
+        // create a cartItem list
         List<CartItem> cartItemList = new ArrayList<>();
-        String query = "SELECT CartItem.CARTITEMID, CartItem.FOODID, CartItem.QUANTITY, Food.PRICE FROM CARTITEM JOIN Food ON Food.FoodID = CartItem.FoodID WHERE CARTID = " + cartID;
+        
+        // establish connection
+        Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
+        
+        // set query
+        Statement stmt = conn.createStatement();
+        String query = "SELECT CartItem.CARTITEMID, CartItem.FOODID, CartItem.QUANTITY, "
+                + "Food.PRICE FROM CARTITEM JOIN Food ON Food.FoodID = CartItem.FoodID WHERE CARTID = " + cartID;
         ResultSet rs = stmt.executeQuery(query);
+        
+        // insert details into the cartItem list
         while(rs.next())
         {
-            CartItem cartItem = new CartItem(rs.getInt("CARTITEMID"), rs.getInt("FOODID"), rs.getInt("QUANTITY"), rs.getDouble("PRICE"));
+            CartItem cartItem = new CartItem(rs.getInt("CARTITEMID"), 
+                    rs.getInt("FOODID"), rs.getInt("QUANTITY"), rs.getDouble("PRICE"));
             cartItemList.add(cartItem);
         }
         
-        // make a list to save foodid, quantity
-        // from this list, insert into orderitem
+        // from this list, insert into orderItem DB
         for (CartItem cartItem2 : cartItemList) 
         {
             String query1 = "INSERT INTO ORDERITEM (OrderID, FoodID, Quantity, Price) VALUES (" 
                 + orderID + "," + cartItem2.getFoodId() + "," + cartItem2.getQuantity() + "," + cartItem2.getPrice() + ")";
             int rs1 = stmt.executeUpdate(query1);
         }
-        //delete the list into 
+        
+        // remove the cartItems
         for (CartItem cartItem3 : cartItemList) 
         {
             String query2 = "DELETE FROM CARTITEM WHERE CartItemID = " + cartItem3.getCartItemId();
