@@ -22,6 +22,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import javax.swing.JOptionPane;
 import FOSInterface.CheckoutInterface;
+import java.awt.HeadlessException;
 
 public class PlaceOrderClient extends javax.swing.JFrame {
     
@@ -49,6 +50,7 @@ public class PlaceOrderClient extends javax.swing.JFrame {
      * Creates new form calculateBills
      */
     public PlaceOrderClient(int userID, int modeID, int cartID) throws MalformedURLException,NotBoundException,RemoteException, SQLException, InterruptedException{
+        
         initComponents();
         
         this.userID = userID;
@@ -73,68 +75,71 @@ public class PlaceOrderClient extends javax.swing.JFrame {
         double amountwithSST;
         double amountafTax;
         
-        Registry reg = LocateRegistry.getRegistry("localhost", 1070);
-        CheckoutInterface stub = (CheckoutInterface) reg.lookup("Checkout");
-        
-        
-        // Retrieve data and insert table
-        // create table
-        DefaultTableModel tm = (DefaultTableModel) checkoutTable.getModel();
-        
-        //clear existing row
-        tm.setRowCount(0); 
-        
-        // retrieve data based on cartID
-        List<CartItem> itemList = stub.cartItemRetrieval(cartID);
-
-        //insert data from CartItemList into jtable row by row
         try {
+            Registry reg = LocateRegistry.getRegistry("localhost", 1070);
+            CheckoutInterface stub = (CheckoutInterface) reg.lookup("Checkout");
+
+
+            // Retrieve data and insert table
+            // create table
+            DefaultTableModel tm = (DefaultTableModel) checkoutTable.getModel();
+
+            //clear existing row
+            tm.setRowCount(0); 
+
+            // retrieve data based on cartID
+            List<CartItem> itemList = stub.cartItemRetrieval(cartID);
+
+            //insert data from CartItemList into jtable row by row
             for (CartItem ci : itemList) {
                 tm.addRow(new Object[]{ci.getFoodname(), ci.getQuantity(), ci.getPrice()});     
             }
-            //Problem in jtable infinity loop
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            //test calfoodPrice
+            for (int record = 0; record < tm.getRowCount(); record++) {
+                int Quantity = (int) tm.getValueAt(record, 1);
+                double Price = (double) tm.getValueAt(record, 2); 
+                double indiFoodPrice = stub.calindifoodPrice(Price, Quantity);
+                String formattedfoodPrice = String.format("%.2f", indiFoodPrice);
+                tm.setValueAt(formattedfoodPrice, record, 3);
+            }
+
+            //test calbeforeTax
+            List<Double> pricelist = new ArrayList<>();
+             for (int record = 0; record < tm.getRowCount(); record++) {
+               int Quantity = (int) tm.getValueAt(record, 1);
+               double Price = (double) tm.getValueAt(record, 2);
+               double indiFoodPrice = stub.calindifoodPrice(Price, Quantity);
+              pricelist.add(indiFoodPrice);
+            }
+            System.out.println(pricelist);
+            amountBFTax = stub.calbeforeTax(pricelist);
+            System.out.println("From server calBeforeTax" + amountBFTax);
+            String formattedAmountbfTax = String.format("%.2f", amountBFTax);
+            TFbeforeTax.setText(String.valueOf(formattedAmountbfTax));
+
+            // Multithreading
+            //test calserviceTax
+            amountsvTax = stub.calserviceTax(amountBFTax);
+            String formattedAmountsvTax = String.format("%.2f", amountsvTax);
+            TFserviceTax.setText(formattedAmountsvTax);
+
+            //test calSST
+            amountwithSST = stub.calSST(amountBFTax);
+            String formattedAmountwithSST = String.format("%.2f", amountwithSST);
+            TFsst.setText(formattedAmountwithSST);
+
+            //test calafterTax
+            amountafTax = stub.calafterTax(amountBFTax, amountsvTax, amountwithSST);
+            String formattedAmountafTax = String.format("%.2f", amountafTax);
+            TFafterTax.setText(String.valueOf(formattedAmountafTax));
+            
+        } catch (InterruptedException | NotBoundException | RemoteException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Oh no! Something went wrong. \n"
+                    + "Please proceed to the counter to place your order. \n"
+                    + "Thank you very much ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
         }
-
-        //test calfoodPrice
-        for (int record = 0; record < tm.getRowCount(); record++) {
-            int Quantity = (int) tm.getValueAt(record, 1);
-            double Price = (double) tm.getValueAt(record, 2); 
-            double indiFoodPrice = stub.calindifoodPrice(Price, Quantity);
-            String formattedfoodPrice = String.format("%.2f", indiFoodPrice);
-            tm.setValueAt(formattedfoodPrice, record, 3);
-        }
-
-        //test calbeforeTax
-        List<Double> pricelist = new ArrayList<>();
-         for (int record = 0; record < tm.getRowCount(); record++) {
-           int Quantity = (int) tm.getValueAt(record, 1);
-           double Price = (double) tm.getValueAt(record, 2);
-           double indiFoodPrice = stub.calindifoodPrice(Price, Quantity);
-          pricelist.add(indiFoodPrice);
-        }
-        System.out.println(pricelist);
-        amountBFTax = stub.calbeforeTax(pricelist);
-        System.out.println("From server calBeforeTax" + amountBFTax);
-        String formattedAmountbfTax = String.format("%.2f", amountBFTax);
-        TFbeforeTax.setText(String.valueOf(formattedAmountbfTax));
-
-        // Multithreading
-        //test calserviceTax
-        amountsvTax = stub.calserviceTax(amountBFTax);
-        String formattedAmountsvTax = String.format("%.2f", amountsvTax);
-        TFserviceTax.setText(formattedAmountsvTax);
-
-        //test calSST
-        amountwithSST = stub.calSST(amountBFTax);
-        String formattedAmountwithSST = String.format("%.2f", amountwithSST);
-        TFsst.setText(formattedAmountwithSST);
-
-        //test calafterTax
-        amountafTax = stub.calafterTax(amountBFTax, amountsvTax, amountwithSST);
-        String formattedAmountafTax = String.format("%.2f", amountafTax);
-        TFafterTax.setText(String.valueOf(formattedAmountafTax));
     }
 
     /**
@@ -330,39 +335,32 @@ public class PlaceOrderClient extends javax.swing.JFrame {
             CheckoutInterface stub = (CheckoutInterface) reg.lookup("Checkout");
 
             int orderID = 0;
-        
             orderID = stub.placeOrder(userID, cartID, modeID, totalprice, status);
             
             if (orderID != 0) {
                 JOptionPane.showMessageDialog(null, "Place Order Successful! \n"
-                        + "Your Order ID is" + orderID + "\n"
+                        + "Your Order ID is " + orderID + "\n"
                         + "Our chefs will prepare your food soon ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
-
-                // Close the current frame (if needed)
+                
+                // Close the current page, go to next page
                 this.dispose();
-
-                // Open the next page
                 MakePaymentClient.createAndShowGUI(userID, modeID, cartID, orderID, totalprice);
-
-            }else{
-        
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Oh no! Something went wrong. \n"
+                        + "Please proceed to the counter to place your order. \n"
+                        + "Thank you very much ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
+                
+                CartFrameClient.createAndShowGUI(userID, modeID);
+                this.dispose();
+            }
+        } catch (HeadlessException | NumberFormatException | NotBoundException | RemoteException | SQLException e) {
+            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, "Oh no! Something went wrong. \n"
                         + "Please proceed to the counter to place your order. \n"
                         + "Thank you very much ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
-            }
-
-            stub.moveCartItemToOrderItem(cartID, orderID, totalprice);
-            
-        } catch (RemoteException ex) {
-            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotBoundException ex){
-            Logger.getLogger(PlaceOrderClient.class.getName()).log(Level.SEVERE, null, ex);
+            this.dispose();
         }
-
-        
-
     }//GEN-LAST:event_ButtonOrderActionPerformed
 
     private void ButtonOrderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonOrderMouseClicked

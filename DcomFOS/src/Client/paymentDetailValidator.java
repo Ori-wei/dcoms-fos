@@ -20,7 +20,7 @@ public class paymentDetailValidator {
     public static void addValidation(JTextField[] textField, List<Function<String, String>> validation, 
             JLabel[] warningLabels, JButton btn) {
         boolean[] validationResults = new boolean[textField.length];
-        System.out.println("Hi i am called");
+        System.out.println("Validation called");
         
         for (int i = 0; i < textField.length; i++) {
             int finalI = i;          
@@ -102,7 +102,7 @@ public class paymentDetailValidator {
     }
     
     public static String validateYear(String year){
-        System.out.println("Month");
+        System.out.println("Year");
         int y = Integer.parseInt(year);
         if (y < 23 || y > 27) {
             return "Please enter a valid year.";
