@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Enumeration;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -98,6 +97,11 @@ public class MakePaymentClient extends javax.swing.JFrame {
     
     /**
      * Creates new form makePayment
+     * @param userID
+     * @param modeID
+     * @param cartID
+     * @param orderID
+     * @param totalprice
      * @throws java.rmi.RemoteException
      */
     
@@ -144,15 +148,12 @@ public class MakePaymentClient extends javax.swing.JFrame {
         
         // call input validation
         addValidation(textfields, validation, warningLabels, ButtonPay);
-        
     }
     
     public MakePaymentClient(int userID, int orderID, double totalprice) throws RemoteException{
         initComponents();
         
         this.userID = userID;
-        this.modeID = modeID;
-        this.cartID = cartID;
         this.orderID = orderID;
         this.totalprice = totalprice;
         
@@ -428,32 +429,29 @@ public class MakePaymentClient extends javax.swing.JFrame {
             boolean paymentSucess = false;
             paymentSucess = stub1.makePayment(orderID, totalprice, paymentMethod, pytimestamp);
             if (paymentSucess) {
-                try {
-                    boolean updateOrderSuccess = stub1.updateOrderPaid(orderID);
+                JOptionPane.showMessageDialog(null, "Make Payment Successful! \n"
+                    + "Thank you for your payment. \n"
+                    + "Please come again ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
 
-                    if (updateOrderSuccess) {
-                        JOptionPane.showMessageDialog(null, "Make Payment Successful! \n"
-                            + "Thank you for your payment. \n"
-                            + "Please come again ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
-
-                        // Close the current page, open the next page
-                        this.dispose();
-                        ModeClient.createAndShowGUI(userID);
-                    }
-
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Oh no! Something went wrong. \n"
+                // Close the current page, open the next page
+                this.dispose();
+                ModeClient.createAndShowGUI(userID);
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Oh no! Something went wrong. \n"
+                                    + "Please proceed to the counter to make payment. \n"
+                                    + "Thank you very much ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
+                OrderDetailFrameClient.createAndShowGUI(userID, orderID, modeID);
+                this.dispose();
+            }
+            
+            
+        } catch (RemoteException | SQLException | NotBoundException ex) {
+            Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Oh no! Something went wrong. \n"
                                 + "Please proceed to the counter to make payment. \n"
                                 + "Thank you very much ^^~", "From McGee:", JOptionPane.INFORMATION_MESSAGE);
-                    e.printStackTrace();
-                }
-            }
-        } catch (RemoteException ex) {
-            Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotBoundException ex){
-            Logger.getLogger(MakePaymentClient.class.getName()).log(Level.SEVERE, null, ex);
+            this.dispose();
         }
     }//GEN-LAST:event_ButtonPayActionPerformed
 

@@ -186,11 +186,13 @@ public class CheckoutServer extends UnicastRemoteObject implements CheckoutInter
     }
 
     boolean makePaymentSuccess;
+    boolean updateOrderSuccess;
     @Override
     public boolean makePayment(int orderid, double amount, String paymentMethod, Timestamp paymentDT) 
             throws RemoteException, SQLException{
         // function success indicator
         makePaymentSuccess = false;
+        updateOrderSuccess = false;
         
         // connect to payment db
         Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/DcomsFOS", "root", "toor");
@@ -204,18 +206,20 @@ public class CheckoutServer extends UnicastRemoteObject implements CheckoutInter
         conn.commit();
         conn.close();
         
-        // successful msg
-        System.out.println("Make payment successful ^^~");
+        // update order status
+        updateOrderSuccess = updateOrderPaid(orderid);
         
         // return boolean
-        return makePaymentSuccess = true;
+        makePaymentSuccess = updateOrderSuccess;
+        System.out.println("Make payment successful ^^~");
+        return makePaymentSuccess;
     }
 
     boolean updateOrderStatus;
     @Override
     public boolean updateOrderPaid(int orderid) throws RemoteException, SQLException{
         // function success indicator
-        // fail = 0, success = 1
+        // fail = false, success = true
         updateOrderStatus = false;
         
         // establish connection
